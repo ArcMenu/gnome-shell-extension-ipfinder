@@ -95,7 +95,7 @@ function _getGoogleMapTile(ipData, callback) {
   let request = Soup.Message.new('GET','https://maps.googleapis.com/maps/api/staticmap?center=' + ipData.loc + '&size=150x150&zoom=13&scale=2');
   request.connect('got_chunk', Lang.bind(this, function(message, chunk) {
     // write each chunk to file
-    fstream.write(chunk.get_data(), null, chunk.length);
+    fstream.write(chunk.get_data(), null);
   }));
 
   _httpSession.queue_message(request, function(_httpSession, message) {
