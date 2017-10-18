@@ -153,10 +153,10 @@ const IPMenu = new Lang.Class({ //menu bar item
       icon_size: ICON_SIZE
     });
 
-    this._ipAddr = DEFAULT_DATA.ip;
+    this.ipAddr = DEFAULT_DATA.ip;
 
     this._label = new St.Label({
-      text: this._compactMode ? '' : this._ipAddr
+      text: this._compactMode ? '' : this.ipAddr
     });
 
     hbox.add_child(this._icon);
