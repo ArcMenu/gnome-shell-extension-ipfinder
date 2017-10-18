@@ -95,7 +95,7 @@ function _getGoogleMapTile(ipData, callback) {
   let request = Soup.Message.new('GET','https://maps.googleapis.com/maps/api/staticmap?center=' + ipData.loc + '&size=150x150&zoom=13&scale=2');
   request.connect('got_chunk', Lang.bind(this, function(message, chunk) {
     // write each chunk to file
-    fstream.write(chunk.get_data(), null, chunk.length);
+    fstream.write(chunk.get_data(), null);
   }));
 
   _httpSession.queue_message(request, function(_httpSession, message) {
@@ -153,10 +153,10 @@ const IPMenu = new Lang.Class({ //menu bar item
       icon_size: ICON_SIZE
     });
 
-    this._ipAddr = DEFAULT_DATA.ip;
+    this.ipAddr = DEFAULT_DATA.ip;
 
     this._label = new St.Label({
-      text: this._compactMode ? '' : this._ipAddr
+      text: this._compactMode ? '' : this.ipAddr
     });
 
     hbox.add_child(this._icon);
