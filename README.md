@@ -55,7 +55,7 @@ IP Finder is available under the terms of the GPL-3.0 license See [`COPYING`](ht
 
 Any suggestions for features and contributions to the continuing code development can be made on IP Finder's Github page via the issue tracker or code contributions via a pull request.
 
-## 
+-----
 
 ![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/dip.png)
 
