@@ -1,10 +1,10 @@
-# ![IP Finder](https://github.com/LinxGem33/IP-Finder/blob/master/screens/ip-address3.png?raw=true) IP Finder
+# ![IP Finder](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/ip-address3.png) IP Finder
 
 ### What is IP Finder Gnome Extension?
 
 IP Finder displays information about your public IP address (hostname, country, AS block etc) as well as show a map & flag image of the IP's geolocation this extension is also useful for informational purposes to monitor VPN geolocation and public network IP addresses.
 
-##
+-----
 
 ### Where is IP Finder's data retrieved from?
 
@@ -21,8 +21,7 @@ IP Data used for API calls are courtesy of: [ipinfo.io](http://ipinfo.io/) & [ic
 
 The Geolocation Map Tile Image is courtesy of: [Google Maps](https://www.google.com/maps). google maps provides geographic data such as geocoding, directions, elevation, place and time zone information.
 
-
-## 
+-----
 
 ### Installation
 
@@ -30,13 +29,13 @@ You can now install this extension from extensions.gnome.org website by clicking
 
 > [One click install](https://extensions.gnome.org/extension/1190/ip-finder/)
 
-## 
+-----
 
 ### Issues & Bugs
 
 Bugs & issues should be reported [here](https://github.com/LinxGem33/IP-Finder/issues) on the Github issues tracker page.
 
-## 
+-----
 
 ### Help & Support
 
@@ -44,13 +43,13 @@ If your unsure about anything or need a bit more help and support with IP Finder
 
 > [IP Finder's Wiki](https://github.com/LinxGem33/IP-Finder/wiki)
 
-##
+-----
 
-### License & Terms ![](https://github.com/LinxGem33/IP-Finder/blob/master/screens/Copyleft-16.png?raw=true)
+### License & Terms ![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/Copyleft-16.png)
 
-IP Finder is available under the terms of the GPL-3.0 license See [`COPYING`](https://github.com/LinxGem33/IP-Finder/blob/master/COPYING) for details.
+IP Finder is available under the terms of the GPL-3.0 license See [`COPYING`](https://gitlab.com/LinxGem33/IP-Finder/blob/master/COPYING) for details.
 
-## 
+----- 
 
 ### Contributions & Suggestions
 
@@ -58,6 +57,6 @@ Any suggestions for features and contributions to the continuing code developmen
 
 ## 
 
-![](https://github.com/LinxGem33/IP-Finder/blob/master/screens/dip.png?raw=true)
+![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/dip.png)
 
-![](https://github.com/LinxGem33/IP-Finder/blob/master/screens/ipd.png?raw=true) 
+![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/ipd.png) 
