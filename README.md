@@ -1,4 +1,4 @@
-# ![IP Finder](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/ip-address3.png) IP Finder
+# ![IP Finder](https://gitlab.com/LinxGem33/IP-Finder/raw/master/screens/ip-address3.png) IP Finder
 
 ### What is IP Finder Gnome Extension?
 
@@ -57,6 +57,4 @@ Any suggestions for features and contributions to the continuing code developmen
 
 -----
 
-![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/dip.png)
-
-![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/ipd.png) 
+![](https://gitlab.com/LinxGem33/IP-Finder/raw/master/screens/ipd.png)
