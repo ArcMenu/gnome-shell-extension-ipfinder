@@ -37,7 +37,7 @@ You can now install this extension from extensions.gnome.org website by clicking
 
 ### Issues & Bugs
 
-Bugs & issues should be reported [here](https://github.com/LinxGem33/IP-Finder/issues) on the Github issues tracker page.
+Bugs & issues should be reported [here](https://gitlab.com/LinxGem33/IP-Finder/issues) on the Github issues tracker page.
 
 -----
 
