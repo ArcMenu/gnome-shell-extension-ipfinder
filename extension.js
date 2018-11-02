@@ -63,7 +63,7 @@ function _getIPDetails(ipAddr, callback) {
   let _httpSession = new Soup.SessionAsync();
   Soup.Session.prototype.add_feature.call(_httpSession,new Soup.ProxyResolverDefault());
 
-  var request = Soup.Message.new('GET', 'https://icanhazip.com/' + ipAddr);
+  var request = Soup.Message.new('GET', 'https://ipinfo.io/' + ipAddr);
 
   _httpSession.queue_message(request, function(_httpSession, message) {
     if (message.status_code !== 200) {
