@@ -1,9 +1,7 @@
-
 .panel-status-menu-box {
-    padding-top: 4px;
-    padding-right: 0px;
-    padding-bottom: 3px;
-    padding-left: 0px;
+  border-radius: 10px;
+padding: 6px 4px;
+
 }
 
 .ip-info-key {
