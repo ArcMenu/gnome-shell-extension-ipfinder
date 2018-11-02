@@ -149,7 +149,7 @@ const IPMenu = new Lang.Class({ //menu bar item
     let hbox = new St.BoxLayout({style_class: 'panel-status-menu-box'});
 
     this._icon = new St.Icon({
-      gicon: Gio.icon_new_for_string(Me.path + '/icons/flags/_unknown.png'),
+      gicon: Gio.icon_new_for_string(Me.path + '/icons/flags/US.png'),
       icon_size: ICON_SIZE
     });
 
