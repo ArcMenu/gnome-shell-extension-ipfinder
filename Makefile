@@ -33,7 +33,7 @@ clean:
 
 extension: ./schemas/gschemas.compiled $(MSGSRC:.po=.mo)
 
-./schemas/gschemas.compiled: ./schemas/org.gnome.shell.extensions.arc-menu.gschema.xml
+./schemas/gschemas.compiled: ./schemas/org.gnome.shell.extensions.ip-finder.gschema.xml
 	glib-compile-schemas ./schemas/
 
 potfile: ./po/ip-finder.pot
@@ -43,7 +43,7 @@ mergepo: potfile
 		msgmerge -U $$l ./po/ip-finder.pot; \
 	done;
 
-./po/arc-menu.pot: $(TOLOCALIZE)
+./po/ip-finder.pot: $(TOLOCALIZE)
 	mkdir -p po
 	xgettext -k_ -kN_ --from-code utf-8 -o po/ip-finder.pot --package-name "IP Finder" $(TOLOCALIZE)
 
