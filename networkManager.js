@@ -435,13 +435,14 @@ var NetworkManger = class IPFinder_NetworkManger{
     }
 
     _syncConnectivity() {
-        this.emit('connection-changed');
         if (this._mainConnection == null ||
             this._mainConnection.state != NM.ActiveConnectionState.ACTIVATED) {
             this._flushConnectivityQueue();
+            this.emit('no-connection');
             return;
         }
 
+        this.emit('connection-changed');
         let isPortal = this._client.connectivity == NM.ConnectivityState.PORTAL;
         // For testing, allow interpreting any value != FULL as PORTAL, because
         // LIMITED (no upstream route after the default gateway) is easy to obtain
