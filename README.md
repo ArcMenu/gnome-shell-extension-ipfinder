@@ -6,7 +6,6 @@ IP Finder displays information about your public IP address (hostname, country, 
 
 -----
 
-![](https://gitlab.com/LinxGem33/IP-Finder/raw/master/screens/ipd.png)
 
 
 ### License & Terms ![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/Copyleft-16.png)
