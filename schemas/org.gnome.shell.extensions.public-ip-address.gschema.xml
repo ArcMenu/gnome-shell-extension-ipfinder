@@ -6,13 +6,13 @@
     <value value="2" nick="right"/>
   </enum>
   <schema path="/org/gnome/shell/extensions/public-ip-address/" id="org.gnome.shell.extensions.public-ip-address">
-    <key type="i" name="refresh-rate">
-      <default>30</default>
-      <summary>Check every x seconds</summary>
-    </key>
     <key type="b" name="compact-mode">
       <default>false</default>
       <summary>Only show flag in toolbar</summary>
+    </key>
+    <key type="s" name="ip-address">
+      <default>''</default>
+      <summary>IP Address</summary>
     </key>
     <key name="position-in-panel" enum="org.gnome.shell.extensions.public-ip-address.position">
       <default>'right'</default>
