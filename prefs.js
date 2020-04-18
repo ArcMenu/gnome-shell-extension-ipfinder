@@ -35,7 +35,7 @@ const Gettext = imports.gettext.domain('IP-Finder');
 const _ = Gettext.gettext;
 
 const SETTINGS_COMPACT_MODE = 'compact-mode';
-const SETTINGS_REFRESH_RATE = 'refresh-rate';
+
 const SETTINGS_POSITION = 'position-in-panel';
 
 const IPMenuSettingsWidget = new GObject.Class({
@@ -93,24 +93,6 @@ let presentLabel = '<b>' + _("Display Options") + '</b>';
 
     vbox.add(positionContainer);
 
-    //
-    let frequencyContainer = new Gtk.HBox({spacing: 5});
-    let frequencyLabel = new Gtk.Label({label: _('How Often to check for IP changes (in secs)')});
-    let frequencySelector = new Gtk.SpinButton();
-
-    frequencyContainer.pack_start(frequencyLabel, 0,0,0);
-    frequencyContainer.pack_end(frequencySelector, 0,0,0);
-
-    frequencySelector.set_numeric(true);
-
-    frequencySelector.set_value(this._settings.get_value(SETTINGS_REFRESH_RATE));
-    frequencySelector.set_range(30, 30000);
-    frequencySelector.set_increments(10,100);
-
-    this._settings.bind(SETTINGS_REFRESH_RATE, frequencySelector, 'value', Gio.SettingsBindFlags.DEFAULT);
-
-    vbox.add(frequencyContainer);
-
   },
 });
 
@@ -121,6 +103,5 @@ function init() {
 function buildPrefsWidget() {
   let widget = new IPMenuSettingsWidget();
   widget.show_all();
-
   return widget;
 }
