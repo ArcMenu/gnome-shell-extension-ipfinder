@@ -1,8 +1,8 @@
 # Basic Makefile
 
 UUID = IP-Finder@linxgem33.com
-BASE_MODULES = AUTHORS convenience.js COPYING extension.js helper.js metadata.json README.md stylesheet.css utils.js
-EXTRA_MODULES = constants.js controller.js prefs.js prefsWidgets.js
+BASE_MODULES = convenience.js COPYING extension.js metadata.json README.md stylesheet.css prefs.js
+
 
 TOLOCALIZE = $
 EXTRA_DIRECTORIES = icons
