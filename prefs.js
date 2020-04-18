@@ -123,21 +123,21 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             let logoPath = Me.path + '/icons/default_map.png';
             let [imageWidth, imageHeight] = [150, 150];
             let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(logoPath, imageWidth, imageHeight);
-            let arcMenuImage = new Gtk.Image({ pixbuf: pixbuf });
-            let arcMenuImageBox = new Gtk.VBox({
+            let ipFinderImage = new Gtk.Image({ pixbuf: pixbuf });
+            let ipFinderImageBox = new Gtk.VBox({
                 margin_top: 0,
                 margin_bottom: 0,
                 expand: false
             });
-            arcMenuImageBox.add(arcMenuImage);
+            ipFinderImageBox.add(ipFinderImage);
 
             // Create the info box
-            let arcMenuInfoBox = new Gtk.VBox({
+            let ipFinderInfoBox = new Gtk.VBox({
                 margin_top: 0,
                 margin_bottom: 5,
                 expand: false
             });
-            let arcMenuLabel = new Gtk.Label({
+            let ipFinderLabel = new Gtk.Label({
                 label: '<b>' + _('IP Finder - ArcMenu Team') + '</b>',
                 use_markup: true,
                 expand: false
@@ -179,12 +179,12 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             });
             this.creditsFrame.add(creditsLabel);
             
-            arcMenuInfoBox.add(arcMenuLabel);
-            arcMenuInfoBox.add(versionLabel);
-            arcMenuInfoBox.add(projectDescriptionLabel);
-            arcMenuInfoBox.add(projectLinkButton);
-            arcMenuInfoBox.add(arcMenuTeamButton);
-            arcMenuInfoBox.add(this.creditsScrollWindow);
+            ipFinderInfoBox.add(ipFinderLabel);
+            ipFinderInfoBox.add(versionLabel);
+            ipFinderInfoBox.add(projectDescriptionLabel);
+            ipFinderInfoBox.add(projectLinkButton);
+            ipFinderInfoBox.add(arcMenuTeamButton);
+            ipFinderInfoBox.add(this.creditsScrollWindow);
 
             // Create the GNU software box
             let gnuSofwareLabel = new Gtk.Label({
@@ -198,8 +198,8 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             });
             gnuSofwareLabelBox.add(gnuSofwareLabel);
 
-            this.add(arcMenuImageBox);
-            this.add(arcMenuInfoBox);
+            this.add(ipFinderImageBox);
+            this.add(ipFinderInfoBox);
             this.add(gnuSofwareLabelBox);
     }
 });

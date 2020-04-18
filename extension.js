@@ -114,7 +114,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
         let parentContainer = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
-            x_expand: true
+            x_expand: true,
+            style: "min-width: 420px;"
         }); //main container that holds ip info and map
         //
 
@@ -223,7 +224,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                 if(data[key]){
                     let ipInfoRow = new St.BoxLayout();
                     this.ipInfoBox.add_actor(ipInfoRow);
-    
+                    
                     let label = new St.Label({
                         style_class: 'ip-info-key', 
                         text: DEFAULT_DATA[key].name + ': ',
