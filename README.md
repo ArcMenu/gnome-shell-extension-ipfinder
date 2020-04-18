@@ -1,4 +1,4 @@
-# ![IP Finder](https://assets.gitlab-static.net/uploads/-/system/project/avatar/18205718/IP-Finder2.png) IP Finder
+# ![IP Finder](https://assets.gitlab-static.net/uploads/-/system/project/avatar/18205718/IP-Finder2.png?width=128) IP Finder
 
 ### What is IP Finder Gnome Extension?
 
