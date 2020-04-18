@@ -36,7 +36,6 @@ const Gettext = imports.gettext.domain('IP-Finder');
 const _ = Gettext.gettext;
 
 const SETTINGS_COMPACT_MODE = 'compact-mode';
-
 const SETTINGS_POSITION = 'position-in-panel';
 
 var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.Box {
@@ -100,7 +99,6 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
     }
 });
 
-// About Page
 var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box {
     _init(settings) {
         super._init({
@@ -230,6 +228,7 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
         this.add(notebook);
     }
 });
+
 function init() {
   Convenience.initTranslations("IP-Finder");
 }

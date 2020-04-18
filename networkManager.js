@@ -82,7 +82,6 @@ function ensureActiveConnectionProps(active) {
 
 var NetworkManger = class IPFinder_NetworkManger{
     constructor() {
-
         // Device types
         this._dtypes = { };
         this._dtypes[NM.DeviceType.ETHERNET] = imports.ui.status.network.NMDeviceWired;
@@ -98,14 +97,11 @@ var NetworkManger = class IPFinder_NetworkManger{
         this._ctypes[NM.SETTING_CDMA_SETTING_NAME] = NMConnectionCategory.WWAN;
         this._ctypes[NM.SETTING_GSM_SETTING_NAME] = NMConnectionCategory.WWAN;
         this._ctypes[NM.SETTING_VPN_SETTING_NAME] = NMConnectionCategory.VPN;
-        global.log("CLient get")
         NM.Client.new_async(null, this._clientGot.bind(this));
     }
 
-   
     _clientGot(obj, result) {
         this._client = NM.Client.new_finish(result);
-        global.log("CLient Found")
         this._activeConnections = [];
         this._connections = [];
         this._connectivityQueue = [];
@@ -159,7 +155,6 @@ var NetworkManger = class IPFinder_NetworkManger{
         }
         this._syncDeviceNames();
     }
-
 
     _onActivationFailed(_device, _reason) {
         // XXX: nm-applet has no special text depending on reason
@@ -476,6 +471,5 @@ var NetworkManger = class IPFinder_NetworkManger{
 
         this._connectivityQueue.push(path);
     }
-
 }
 Signals.addSignalMethods(NetworkManger.prototype);

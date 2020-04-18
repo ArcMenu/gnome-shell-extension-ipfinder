@@ -72,14 +72,14 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         let networkManager = new Me.imports.networkManager.NetworkManger();
         networkManager.connect('connection-changed', () => {
             if(!this._connection){
-                global.log("Connection Changed");
+                //global.log("Connection Changed");
                 this._connection = true;
                 this._getIpInfo();
             }
         });
         networkManager.connect('no-connection', () => {
             if(this._connection){
-                global.log("No Connection");
+                //global.log("No Connection");
                 this._loadDetails(null);
                 this._connection = false;
             }
@@ -115,7 +115,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         let parentContainer = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             x_expand: true,
-            style: "min-width: 420px;"
+            style: "min-width: 400px;"
         }); //main container that holds ip info and map
         //
 
@@ -195,10 +195,10 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
     _getIpInfo(){
         if(!this.gettingIpInfo){
-            global.log("Getting IP Info...");
+            //global.log("Getting IP Info...");
             this.gettingIpInfo = true;
             Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
-                global.log("IP Address Found - " + ipAddr);
+                //global.log("IP Address Found - " + ipAddr);
                 this.gettingIpInfo = false;
                 if(ipAddrError === null){
                     Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
@@ -218,6 +218,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         if(data){
             this.ipAddr = data.ip;
             this._label.text = this._compactMode ? '' : this.ipAddr;
+            this._icon.icon_name = '';
             this._icon.gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + data.country + '.png');
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
@@ -250,65 +251,62 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             let tileNumber = Utils._getTileNumber(data['loc']);
             let tileCoords = tileNumber.x + "," + tileNumber.y;
             let tileCoordsUrl = tileNumber.z + "/" + tileNumber.x + "/" + tileNumber.y;
-            global.log(tileCoordsUrl);
+            //global.log(tileCoordsUrl);
 
             if(tileCoords !== this._settings.get_string('map-tile-coords') || !this.checkLatestFileMapExists()){
                 this._mapInfo.destroy_all_children();
                 this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
                 this._mapInfo.add_actor(new St.Label({
-                    style_class: 'ip-info-value', 
-                    text: _("Loading new map tile...")
+                    style_class: 'ip-info-key', 
+                    text: _("Loading new map tile..."),
+                    x_align: Clutter.ActorAlign.CENTER,
                 }));
                 Utils._getMapTile(this._session, tileCoordsUrl, (err, res) => {
                     this._mapInfo.destroy_all_children();
                     if(err){
-                        global.log("Tile Error - New Tile Coords");
+                        //global.log("Tile Error - New Tile Coords");
                         this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
                         this._mapInfo.add_actor(new St.Label({
-                            style_class: 'ip-info-value', 
-                            text: _("Error Generating Image!")
+                            style_class: 'ip-info-key', 
+                            text: _("Error Generating Image!"),
+                            x_align: Clutter.ActorAlign.CENTER,
                         }));
                     }
                     else{
-                        global.log("No Tile Error - New Tile Coords");
+                        //global.log("No Tile Error - New Tile Coords");
                         this._settings.set_string('map-tile-coords', tileCoords);
                         this._mapInfo.add_child(this.getMapTile(LATEST_MAP_TILE));
                     }  
                 });
             }
             else{
-                global.log("Same Tile Coords");
+                //global.log("Same Tile Coords");
                 this._mapInfo.destroy_all_children();
                 this._mapInfo.add_child(this.getMapTile(LATEST_MAP_TILE));
             }
         }  
         else{
             this._label.text = this._compactMode ? '' : DEFAULT_DATA.ip.text;
+            this._icon.icon_name = 'network-offline-symbolic';
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
                 let ipInfoRow = new St.BoxLayout();
                 this.ipInfoBox.add_actor(ipInfoRow);
 
                 let label = new St.Label({
-                    style_class: 'ip-info-key', 
+                    style_class: 'ip-info-value', 
                     text: DEFAULT_DATA[key].name + ': ',
                     x_align: Clutter.ActorAlign.FILL,
                 });
                 ipInfoRow.add_actor(label);
-
-                let infoLabel = new St.Label({
-                    x_align: Clutter.ActorAlign.FILL,
-                    x_expand: true,
-                    style_class: 'ip-info-value', 
-                    text: ''
-                });
-                let dataLabelBtn = new St.Button({ 
-                    child: infoLabel,
-                });
-                ipInfoRow.add_actor(dataLabelBtn);
             }
             this._mapInfo.destroy_all_children();
             this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
+            this._mapInfo.add_actor(new St.Label({
+                style_class: 'ip-info-key', 
+                text: _("No Connection"),
+                x_align: Clutter.ActorAlign.CENTER,
+            }));
         }
     }
     
