@@ -216,7 +216,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             let tileCoordsUrl = tileNumber.z + "/" + tileNumber.x + "/" + tileNumber.y;
             global.log(tileCoordsUrl);
 
-            if(tileCoords !== this._settings.get_string('map-tile-coords')){
+            if(tileCoords !== this._settings.get_string('map-tile-coords') || !this.checkLatestFileMapExists()){
                 this._mapInfo.destroy_all_children();
                 this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
                 this._mapInfo.add_actor(new St.Label({
@@ -282,6 +282,13 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         else if (mapTile == LATEST_MAP_TILE)
             return this._textureCache.load_file_async(Gio.file_new_for_path(LATEST_MAP_TILE), -1, 160, 1, 1);
     }
+
+    checkLatestFileMapExists(){
+        let file = Gio.File.new_for_path(LATEST_MAP_TILE);
+
+        return file.query_exists(null);
+    }
+
 
     destroy() {
         super.destroy();
