@@ -307,9 +307,12 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         return file.query_exists(null);
     }
 
-
     destroy() {
-        super.destroy();
+        Main.panel.statusArea['ip-menu'] = null;
+
+        this._settings.run_dispose();
+        this._settings = null;
+        super._onDestroy();
     }
 
     resetPanelPos() {
