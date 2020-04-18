@@ -12,9 +12,12 @@
     "3.24",
     "3.26",
     "3.28",
-    "3.30"
+    "3.30",
+    "3.32",
+    "3.34",
+    "3.36"
   ], 
-  "url": "https://github.com/LinxGem33/IP-Finder#-ip-finder", 
-  "uuid": "IP-Finder@linxgem33.github.com", 
+  "url": "https://gitlab.com/arcmenu-team/IP-Finder", 
+  "uuid": "IP-Finder@linxgem33.com", 
   "version": 2
 }
