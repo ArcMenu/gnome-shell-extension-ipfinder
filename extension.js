@@ -37,6 +37,7 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Utils = Me.imports.utils;
+const Util = imports.misc.util;
 const _ = Gettext.gettext;
 
 const ICON_SIZE = 16;
@@ -112,7 +113,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         //main containers
         let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
         let parentContainer = new St.BoxLayout({
-            x_align: Clutter.ActorAlign.FILL
+            x_align: Clutter.ActorAlign.FILL,
+            x_expand: true
         }); //main container that holds ip info and map
         //
 
@@ -140,9 +142,24 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             child: this._settingsIcon, 
             style_class: 'button' 
         });
-        this._settingsButton.connect('clicked',  ()=> imports.misc.extensionUtils.openPrefs());
+        this._settingsButton.connect('clicked',  ()=> Util.spawnCommandLine('gnome-extensions prefs IP-Finder@linxgem33.com'));
 
         buttonBox.add_actor(this._settingsButton);
+
+        this._copyIcon = new St.Icon({
+            icon_name: 'edit-copy-symbolic',
+            style_class: 'popup-menu-icon'
+        });
+        this._copyButton = new St.Button({ 
+            child: this._copyIcon,
+            x_expand: true,
+            x_align: Clutter.ActorAlign.CENTER,
+            style_class: 'button' 
+        });
+        this._copyButton.connect('clicked',  ()=> {
+            Clipboard.set_text(CLIPBOARD_TYPE, this.ipAddr);
+        });
+        buttonBox.add_actor(this._copyButton);
 
         this._refreshIcon = new St.Icon({
             icon_name: 'view-refresh-symbolic',
@@ -150,7 +167,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         });
         this._refreshButton = new St.Button({ 
             child: this._refreshIcon,
-            x_expand: true,
+            x_expand: false,
             x_align: Clutter.ActorAlign.END,
             style_class: 'button' 
         });
@@ -307,9 +324,12 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         return file.query_exists(null);
     }
 
-
     destroy() {
-        super.destroy();
+        Main.panel.statusArea['ip-menu'] = null;
+
+        this._settings.run_dispose();
+        this._settings = null;
+        super._onDestroy();
     }
 
     resetPanelPos() {

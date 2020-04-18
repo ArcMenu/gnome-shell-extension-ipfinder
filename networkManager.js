@@ -36,10 +36,6 @@ const Utils = Me.imports.utils;
 
 const { loadInterfaceXML } = imports.misc.fileUtils;
 
-Gio._promisify(NM.Client, 'new_async', 'new_finish');
-Gio._promisify(NM.Client.prototype,
-    'check_connectivity_async', 'check_connectivity_finish');
-
 const NMConnectionCategory = {
     INVALID: 'invalid',
     WIRED: 'wired',
