@@ -1,9 +1,15 @@
 /*
- * ArcMenu Team - IP Finder GNOME Extension
+ * IP-Finder GNOME Extension by ArcMenu Team
  * https://gitlab.com/arcmenu-team/IP-Finder
+ * 
+ * ArcMenu Team
+ * Andrew Zaech https://gitlab.com/AndrewZaech
+ * LinxGem33 (Andy C) https://gitlab.com/LinxGem33
+ * 
+ * Find more from ArcMenu Team at
+ * https://gitlab.com/arcmenu-team 
+ * https://github.com/ArcMenu
  *
- * Modified Work - Andrew Zaech 2020 https://gitlab.com/AndrewZaech
- * Copyright (C) 2017 LinxGem33 (Andy C)
  *
  * This file is part of IP Finder gnome extension.
  * IP Finder gnome extension is free software: you can redistribute it and/or modify
@@ -18,7 +24,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with IP Finder gnome extension.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -31,90 +36,25 @@ const Gettext = imports.gettext.domain('IP-Finder');
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
+const Utils = Me.imports.utils;
 const _ = Gettext.gettext;
 
 const ICON_SIZE = 16;
-const TILE_ZOOM = 9;
 
 const SETTINGS_COMPACT_MODE = 'compact-mode';
 const SETTINGS_POSITION = 'position-in-panel';
 
-function _getIP(session, callback) {
-    let uri = new Soup.URI("https://ipinfo.io/ip");
-    var request = new Soup.Message({ method: 'GET', uri: uri });
-    session.queue_message(request, (session, message) => {
-        if (message.status_code !== Soup.Status.OK) {
-            callback(message.status_code, null);
-            return;
-        }
-        let ip = request.response_body.data;
-        callback(null, ip);
-    });
-}
-
-function _getIPDetails(session, ipAddr, callback) {
-    global.log("https://ipinfo.io/" + ipAddr);
-    let uri = new Soup.URI("https://ipinfo.io/" + ipAddr +"/json");
-    var request = new Soup.Message({ method: 'GET', uri: uri });
-
-    session.queue_message(request, (session, message) => {
-        if (message.status_code !== Soup.Status.OK) {
-            callback(message.status_code, null);
-            return;
-        }
-
-        var ipDetailsJSON = request.response_body.data;
-        var ipDetails = JSON.parse(ipDetailsJSON);
-        callback(null, ipDetails);
-    });
-}
-
-function _getTileNumber(loc) {
-    let zoom = TILE_ZOOM;
-    let [lat, lon] = loc.split(',');
-    lat = parseFloat(lat);
-    lon = parseFloat(lon);
-    let xtile = Math.floor((lon + 180.0) / 360.0 * (1 << zoom)); 
-    let ytile = Math.floor((1.0 - Math.log(Math.tan(lat * Math.PI / 180.0) + 1.0 / Math.cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << zoom));
-
-    return("" + zoom + "/" + xtile + "/" + ytile);
-}
-
-function _getMapTile(IPMenu, tileInfo, callback) {
-    IPMenu._mapInfo.destroy_all_children();
-    IPMenu._mapInfo.add_actor(IPMenu._textureCache.load_file_async(Gio.file_new_for_path(Me.path + '/icons/default_map.png'),-1, 160, 1, 1));
-    IPMenu._mapInfo.add_actor(new St.Label({
-        style_class: 'ip-info-value', 
-        text: _("Loading new map tile...")
-    }));
-    global.log("Loading new Map Tile...");
-    let file = Gio.file_new_for_path(Me.path + '/icons/latest_map.png');
-
-    let uri = new Soup.URI("https://a.tile.openstreetmap.org/" + tileInfo +".png");
-    var request = new Soup.Message({ method: 'GET', uri: uri });
-
-    IPMenu._session.queue_message(request, (session, message) => {
-        if (message.status_code !== Soup.Status.OK) {
-            global.log("ERROR GETTING MAP TILE IMAGE");
-            callback(message.status_code);
-        }
-        else{
-            let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-            fstream.write_bytes(message.response_body_data, null);
-            fstream.close(null);
-            callback(null);
-        }
-    });
-
-}
+const DEFAULT_MAP_TILE = Me.path + '/icons/default_map.png';
+const LATEST_MAP_TILE = Me.path + '/icons/latest_map.png';
 
 const DEFAULT_DATA = {
     ip: { name: _("IP Address"), text: _("No Connection")},
-    org: { name: _("Hostname"), text: ''},
+    hostname: { name: _("Hostname"), text: ''},
     city: { name: _("City"), text: ''},
     region: { name: _("Region"), text: ''},
     country: { name: _("Country"), text: ''},
     loc: { name: _("Location"), text: ''},
+    org: { name: _("Org"), text: ''},
     postal: { name: _("Postal"), text: ''},
     timezone: { name: _("Timezone"), text: ''},
 };
@@ -123,10 +63,13 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     _init() {
         super._init(0.5, _('IP Details'));
         this._textureCache = St.TextureCache.get_default();
-        this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version });
+        this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
         this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
 
         this.setPrefs();
+
+        let networkManager = new Me.imports.networkManager.NetworkManger();
+        networkManager.connect('connection-changed', this._getIpInfo.bind(this));
 
         let hbox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
@@ -155,29 +98,24 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
         //main containers
         let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
-        let parentContainer = new St.BoxLayout(); //main container that holds ip info and map
+        let parentContainer = new St.BoxLayout({
+            x_align: Clutter.ActorAlign.FILL
+        }); //main container that holds ip info and map
         //
 
         //maptile
         this._mapInfo = new St.BoxLayout({ vertical: true });
         parentContainer.add_actor(this._mapInfo);
-
-        //default map tile
-        this._mapTile = new St.Icon({
-            gicon: Gio.icon_new_for_string(Me.path + '/icons/default_map.png'),
-            icon_size: 160
-        });
-
-        this._mapInfo.add_actor(this._mapTile);
+        this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
         //
 
-        this.ipInfoBox = new St.BoxLayout({style_class: 'ip-info-box', vertical: true});
+        this.ipInfoBox = new St.BoxLayout({style_class: 'ip-info-box', vertical: true , x_align: Clutter.ActorAlign.FILL});
         parentContainer.add_actor(this.ipInfoBox);
         ipInfo.actor.add(parentContainer);
         this.menu.addMenuItem(ipInfo);
 
         this.ipInfoMap = new Map();
-
+        this.gettingIpInfo = false;
         this._getIpInfo();
     
         let buttonBox = new PopupMenu.PopupBaseMenuItem({reactive: false});
@@ -220,20 +158,24 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     _getIpInfo(){
-        global.log("Getting IP Info...");
-        _getIP(this._session, (ipAddrError, ipAddr) =>{
-            global.log("IP Address Found - " + ipAddr);
-            if(ipAddrError === null){
-                _getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
-                    if(ipDetailsError === null)
-                        this._loadDetails(ipDetails);
-                    else
-                        this._loadDetails(null);
-                });
-            }
-            else
-                this._loadDetails(null);
-        });
+        if(!this.gettingIpInfo){
+            global.log("Getting IP Info...");
+            this.gettingIpInfo = true;
+            Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
+                global.log("IP Address Found - " + ipAddr);
+                this.gettingIpInfo = false;
+                if(ipAddrError === null){
+                    Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
+                        if(ipDetailsError === null)
+                            this._loadDetails(ipDetails);
+                        else
+                            this._loadDetails(null);
+                    });
+                }
+                else
+                    this._loadDetails(null);
+            });
+        }
     }
 
     _loadDetails(data){
@@ -243,57 +185,104 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._icon.gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + data.country + '.png');
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
-                let ipInfoRow = new St.BoxLayout();
-                this.ipInfoBox.add_actor(ipInfoRow);
-
-                let label = new St.Label({style_class: 'ip-info-key', text: DEFAULT_DATA[key].name + ': '});
-                ipInfoRow.add_actor(label);
-
-                let infoLabel = new St.Label({
-                    x_align: Clutter.ActorAlign.FILL,
-                    style_class: 'ip-info-value', 
-                    text: data[key]
-                });
-                let dataLabelBtn = new St.Button({ 
-                    child: infoLabel,
-                });
-                dataLabelBtn.connect('button-press-event', () => {
-                    Clipboard.set_text(CLIPBOARD_TYPE, dataLabelBtn.child.text);
-                });
-                ipInfoRow.add_actor(dataLabelBtn);
+                if(data[key]){
+                    let ipInfoRow = new St.BoxLayout();
+                    this.ipInfoBox.add_actor(ipInfoRow);
+    
+                    let label = new St.Label({
+                        style_class: 'ip-info-key', 
+                        text: DEFAULT_DATA[key].name + ': ',
+                        x_align: Clutter.ActorAlign.FILL,
+                    });
+                    ipInfoRow.add_actor(label);
+    
+                    let infoLabel = new St.Label({
+                        x_align: Clutter.ActorAlign.FILL,
+                        x_expand: true,
+                        style_class: 'ip-info-value', 
+                        text: data[key]
+                    });
+                    let dataLabelBtn = new St.Button({ 
+                        child: infoLabel,
+                    });
+                    dataLabelBtn.connect('button-press-event', () => {
+                        Clipboard.set_text(CLIPBOARD_TYPE, dataLabelBtn.child.text);
+                    });
+                    ipInfoRow.add_actor(dataLabelBtn);
+                }
             }
-            let tileNumber = _getTileNumber(data['loc']);
-            global.log(tileNumber);
+            let tileNumber = Utils._getTileNumber(data['loc']);
+            let tileCoords = tileNumber.x + "," + tileNumber.y;
+            let tileCoordsUrl = tileNumber.z + "/" + tileNumber.x + "/" + tileNumber.y;
+            global.log(tileCoordsUrl);
 
-            if(data.ip !== this._settings.get_string('ip-address') || this.tileError){
-                this._settings.set_string('ip-address', data.ip);
-                _getMapTile(this, tileNumber, (err, res) => {
+            if(tileCoords !== this._settings.get_string('map-tile-coords')){
+                this._mapInfo.destroy_all_children();
+                this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
+                this._mapInfo.add_actor(new St.Label({
+                    style_class: 'ip-info-value', 
+                    text: _("Loading new map tile...")
+                }));
+                Utils._getMapTile(this._session, tileCoordsUrl, (err, res) => {
                     this._mapInfo.destroy_all_children();
-
                     if(err){
-                        global.log("Tile Error - Different IP");
-                        this.tileError = true;
-                        this._mapInfo.add_actor(this._textureCache.load_file_async(Gio.file_new_for_path(Me.path + '/icons/default_map.png'),-1, 160, 1, 1));
+                        global.log("Tile Error - New Tile Coords");
+                        this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
                         this._mapInfo.add_actor(new St.Label({
                             style_class: 'ip-info-value', 
                             text: _("Error Generating Image!")
                         }));
                     }
                     else{
-                        global.log("No Tile Error - Different IP");
-                        this.tileError = false;
-                        this._mapInfo.add_child(this._textureCache.load_file_async(Gio.file_new_for_path(Me.path + '/icons/latest_map.png'), -1, 160, 1, 1));
+                        global.log("No Tile Error - New Tile Coords");
+                        this._settings.set_string('map-tile-coords', tileCoords);
+                        this._mapInfo.add_child(this.getMapTile(LATEST_MAP_TILE));
                     }  
                 });
             }
             else{
-                global.log("Same IP");
+                global.log("Same Tile Coords");
                 this._mapInfo.destroy_all_children();
-                this._mapInfo.add_child(this._textureCache.load_file_async(Gio.file_new_for_path(Me.path + '/icons/latest_map.png'), -1, 160, 1, 1));
+                this._mapInfo.add_child(this.getMapTile(LATEST_MAP_TILE));
             }
         }  
+        else{
+            this._label.text = this._compactMode ? '' : DEFAULT_DATA.ip.text;
+            this.ipInfoBox.destroy_all_children();
+            for(let key in DEFAULT_DATA){
+                let ipInfoRow = new St.BoxLayout();
+                this.ipInfoBox.add_actor(ipInfoRow);
+
+                let label = new St.Label({
+                    style_class: 'ip-info-key', 
+                    text: DEFAULT_DATA[key].name + ': ',
+                    x_align: Clutter.ActorAlign.FILL,
+                });
+                ipInfoRow.add_actor(label);
+
+                let infoLabel = new St.Label({
+                    x_align: Clutter.ActorAlign.FILL,
+                    x_expand: true,
+                    style_class: 'ip-info-value', 
+                    text: ''
+                });
+                let dataLabelBtn = new St.Button({ 
+                    child: infoLabel,
+                });
+                ipInfoRow.add_actor(dataLabelBtn);
+            }
+            this._mapInfo.destroy_all_children();
+            this._mapInfo.add_actor(this.getMapTile(DEFAULT_MAP_TILE));
+        }
     }
     
+    getMapTile(mapTile){
+        if(mapTile == DEFAULT_MAP_TILE)
+            return new St.Icon({ gicon: Gio.icon_new_for_string(mapTile), icon_size: 160 });
+        else if (mapTile == LATEST_MAP_TILE)
+            return this._textureCache.load_file_async(Gio.file_new_for_path(LATEST_MAP_TILE), -1, 160, 1, 1);
+    }
+
     destroy() {
         super.destroy();
     }
@@ -310,15 +299,15 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 });
 
 function init() {
-  Convenience.initTranslations("IP-Finder");
+    Convenience.initTranslations("IP-Finder");
 }
 
 let _indicator;
 
 function enable() {
-  _indicator = new IPMenu();
+    _indicator = new IPMenu();
 }
 
 function disable() {
-  _indicator.destroy();
+    _indicator.destroy();
 }

@@ -10,9 +10,9 @@
       <default>false</default>
       <summary>Only show flag in toolbar</summary>
     </key>
-    <key type="s" name="ip-address">
+    <key type="s" name="map-tile-coords">
       <default>''</default>
-      <summary>IP Address</summary>
+      <summary>Coords for map tile image</summary>
     </key>
     <key name="position-in-panel" enum="org.gnome.shell.extensions.public-ip-address.position">
       <default>'right'</default>

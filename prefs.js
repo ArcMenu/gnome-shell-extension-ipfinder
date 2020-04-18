@@ -1,8 +1,15 @@
 /*
- * IP Finder gnome extension
- * https://github.com/LinxGem33/IP-Finder
+ * IP-Finder GNOME Extension by ArcMenu Team
+ * https://gitlab.com/arcmenu-team/IP-Finder
  * 
- * Copyright (C) 2017 LinxGem33 (Andy C)
+ * ArcMenu Team
+ * Andrew Zaech https://gitlab.com/AndrewZaech
+ * LinxGem33 (Andy C) https://gitlab.com/LinxGem33
+ * 
+ * Find more from ArcMenu Team at
+ * https://gitlab.com/arcmenu-team 
+ * https://github.com/ArcMenu
+ *
  *
  * This file is part of IP Finder gnome extension.
  * IP Finder gnome extension is free software: you can redistribute it and/or modify
@@ -17,10 +24,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with IP Finder gnome extension.  If not, see <http://www.gnu.org/licenses/>.
- * 
  */
-
-/* -*- mode: js2; js2-basic-offset: 4; indent-tabs-mode: nil -*- */
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
