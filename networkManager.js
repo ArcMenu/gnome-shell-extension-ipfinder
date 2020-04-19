@@ -484,8 +484,6 @@ var NetworkManger = class IPFinder_NetworkManger{
             this._vpnSignalID = this._vpnSection.disconnect(this._vpnSignalID);
             this._vpnSignalID = null;
         }
-
-        this._client.destroy();
     }
 }
 Signals.addSignalMethods(NetworkManger.prototype);
