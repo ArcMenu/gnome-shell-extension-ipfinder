@@ -35,7 +35,7 @@ const Convenience = Me.imports.convenience;
 const Gettext = imports.gettext.domain('IP-Finder');
 const _ = Gettext.gettext;
 
-const SETTINGS_COMPACT_MODE = 'compact-mode';
+const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
 
 var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.Box {
@@ -50,26 +50,32 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
 
         this._settings = settings;
 
-        let checkContainerFrame = new FrameBox();
-        let checkContainer = new FrameBoxRow();
-        let checkLabel = new Gtk.Label({
-            label: _('Only Show Flag on Panel'),
+        let actorsInPanelContainerFrame = new FrameBox();
+        let actorsInPanelContainer = new FrameBoxRow();
+        let actorsInPanelLabel = new Gtk.Label({
+            label: _('Elements to show on the Panel'),
             halign: Gtk.Align.START,
             hexpand: true
         });
    
-        let checkButton = new Gtk.Switch({ 
-            halign: Gtk.Align.END,
-            tooltip_text: _("Disable Recently Installed Apps Indicator") 
+        let actorsInPanelSelector = new Gtk.ComboBoxText({ 
+            halign: Gtk.Align.END
+        });
+        [_("Flag and IP Address"), _("Flag"), _("IP Address")].forEach( (item) => {
+            actorsInPanelSelector.append_text(item);
         });
 
-        checkContainer.add(checkLabel);
-        checkContainer.add(checkButton);
-        checkContainerFrame.add(checkContainer);
+        actorsInPanelContainer.add(actorsInPanelLabel);
+        actorsInPanelContainer.add(actorsInPanelSelector);
+        actorsInPanelContainerFrame.add(actorsInPanelContainer);
 
-        this._settings.bind(SETTINGS_COMPACT_MODE, checkButton, 'active', Gio.SettingsBindFlags.DEFAULT);
+        actorsInPanelSelector.set_active(this._settings.get_enum(SETTINGS_ACTORS_IN_PANEL));
 
-        this.add(checkContainerFrame);
+        actorsInPanelSelector.connect('changed', () => {
+            this._settings.set_enum(SETTINGS_ACTORS_IN_PANEL, actorsInPanelSelector.get_active());
+        });
+
+        this.add(actorsInPanelContainerFrame);
 
         let positionContainerFrame = new FrameBox();
         let positionContainer = new FrameBoxRow();

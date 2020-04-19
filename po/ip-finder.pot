@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-18 20:42-0400\n"
+"POT-Creation-Date: 2020-04-19 08:34-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,58 +18,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: prefs.js:56
-msgid "Only Show Flag on Panel"
+msgid "Elements to show on the Panel"
 msgstr ""
 
-#: prefs.js:76
-msgid "IP Finder Position on the Panel"
+#: prefs.js:64
+msgid "Flag and IP Address"
 msgstr ""
 
-#: prefs.js:86
-msgid "Left"
+#: prefs.js:64
+msgid "Flag"
 msgstr ""
 
-#: prefs.js:86
-msgid "Center"
-msgstr ""
-
-#: prefs.js:86
-msgid "Right"
-msgstr ""
-
-#: prefs.js:138
-msgid "IP Finder - ArcMenu Team"
-msgstr ""
-
-#: prefs.js:143
-msgid "Version: "
-msgstr ""
-
-#: prefs.js:147
-msgid "Displays useful information about your public IP Address"
-msgstr ""
-
-#: prefs.js:151
-msgid "GitLab Link"
-msgstr ""
-
-#: prefs.js:158
-msgid "ArcMenu Team on GitLab"
-msgstr ""
-
-#: prefs.js:217
-msgid "General"
-msgstr ""
-
-#: prefs.js:223
-msgid "About"
-msgstr ""
-
-#: extension.js:52
+#: prefs.js:64 extension.js:52
 msgid "IP Address"
 msgstr ""
 
-#: extension.js:52 extension.js:307
+#: prefs.js:83
+msgid "IP Finder Position on the Panel"
+msgstr ""
+
+#: prefs.js:93
+msgid "Left"
+msgstr ""
+
+#: prefs.js:93
+msgid "Center"
+msgstr ""
+
+#: prefs.js:93
+msgid "Right"
+msgstr ""
+
+#: prefs.js:145
+msgid "IP Finder - ArcMenu Team"
+msgstr ""
+
+#: prefs.js:150
+msgid "Version: "
+msgstr ""
+
+#: prefs.js:154
+msgid "Displays useful information about your public IP Address"
+msgstr ""
+
+#: prefs.js:158
+msgid "GitLab Link"
+msgstr ""
+
+#: prefs.js:165
+msgid "ArcMenu Team on GitLab"
+msgstr ""
+
+#: prefs.js:224
+msgid "General"
+msgstr ""
+
+#: prefs.js:230
+msgid "About"
+msgstr ""
+
+#: extension.js:52 extension.js:320
 msgid "No Connection"
 msgstr ""
 
@@ -105,14 +113,14 @@ msgstr ""
 msgid "Timezone"
 msgstr ""
 
-#: extension.js:65
+#: extension.js:71
 msgid "IP Details"
 msgstr ""
 
-#: extension.js:261
+#: extension.js:274
 msgid "Loading new map tile..."
 msgstr ""
 
-#: extension.js:271
+#: extension.js:284
 msgid "Error Generating Image!"
 msgstr ""
