@@ -75,15 +75,15 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
         this._setPrefs();
 
-        let networkManager = new Me.imports.networkManager.NetworkManger();
-        networkManager.connect('connection-changed', () => {
+        this._networkManager = new Me.imports.networkManager.NetworkManger();
+        this._networkConnectionChangedID = this._networkManager.connect('connection-changed', () => {
             if(!this._connection){
                 //global.log("Connection Changed");
                 this._connection = true;
                 this._getIpInfo();
             }
         });
-        networkManager.connect('no-connection', () => {
+        this._networkNoConnectionID = this._networkManager.connect('no-connection', () => {
             if(this._connection){
                 //global.log("No Connection");
                 this._loadDetails(null);
@@ -337,6 +337,16 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
     destroy() {
         Main.panel.statusArea['ip-menu'] = null;
+
+        if(this._networkConnectionChangedID){
+            this._networkManager.disconnect(this._networkConnectionChangedID);
+            this._networkConnectionChangedID = null;
+        } 
+
+        if(this._networkNoConnectionID){
+            this._networkManager.disconnect(this._networkNoConnectionID);
+            this._networkNoConnectionID = null;
+        } 
 
         this._settings.run_dispose();
         this._settings = null;

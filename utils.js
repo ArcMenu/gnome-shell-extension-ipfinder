@@ -45,7 +45,7 @@ function _getIP(session, callback) {
 }
 
 function _getIPDetails(session, ipAddr, callback) {
-    global.log("https://ipinfo.io/" + ipAddr);
+    //global.log("https://ipinfo.io/" + ipAddr);
     let uri = new Soup.URI("https://ipinfo.io/" + ipAddr +"/json");
     var request = new Soup.Message({ method: 'GET', uri: uri });
 
@@ -73,7 +73,7 @@ function _getTileNumber(loc) {
 }
 
 function _getMapTile(session, tileInfo, callback) {
-    global.log("Loading new Map Tile...");
+    //global.log("Loading new Map Tile...");
     let file = Gio.file_new_for_path(Me.path + '/icons/latest_map.png');
 
     let uri = new Soup.URI("https://a.tile.openstreetmap.org/" + tileInfo +".png");
@@ -81,7 +81,7 @@ function _getMapTile(session, tileInfo, callback) {
 
     session.queue_message(request, (session, message) => {
         if (message.status_code !== Soup.Status.OK) {
-            global.log("ERROR GETTING MAP TILE IMAGE");
+            //global.log("ERROR GETTING MAP TILE IMAGE");
             callback(message.status_code);
         }
         else{

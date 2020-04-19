@@ -123,25 +123,25 @@ var NetworkManger = class IPFinder_NetworkManger{
         }
 
         this._vpnSection = new imports.ui.status.network.NMVpnSection(this._client);
-        this._vpnSection.connect('activation-failed', this._onActivationFailed.bind(this));
+        this._vpnSignalID = this._vpnSection.connect('activation-failed', this._onActivationFailed.bind(this));
 
         this._readConnections();
         this._readDevices();
         this._syncNMState();
         this._syncMainConnection();
         this._syncVpnConnections();
-
-        this._client.connect('notify::nm-running', this._syncNMState.bind(this));
-        this._client.connect('notify::networking-enabled', this._syncNMState.bind(this));
-        this._client.connect('notify::state', this._syncNMState.bind(this));
-        this._client.connect('notify::primary-connection', this._syncMainConnection.bind(this));
-        this._client.connect('notify::activating-connection', this._syncMainConnection.bind(this));
-        this._client.connect('notify::active-connections', this._syncVpnConnections.bind(this));
-        this._client.connect('notify::connectivity', this._syncConnectivity.bind(this));
-        this._client.connect('device-added', this._deviceAdded.bind(this));
-        this._client.connect('device-removed', this._deviceRemoved.bind(this));
-        this._client.connect('connection-added', this._connectionAdded.bind(this));
-        this._client.connect('connection-removed', this._connectionRemoved.bind(this));
+        this._connectionIDs = [];
+        this._connectionIDs.push(this._client.connect('notify::nm-running', this._syncNMState.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::networking-enabled', this._syncNMState.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::state', this._syncNMState.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::primary-connection', this._syncMainConnection.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::activating-connection', this._syncMainConnection.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::active-connections', this._syncVpnConnections.bind(this)));
+        this._connectionIDs.push(this._client.connect('notify::connectivity', this._syncConnectivity.bind(this)));
+        this._connectionIDs.push(this._client.connect('device-added', this._deviceAdded.bind(this)));
+        this._connectionIDs.push(this._client.connect('device-removed', this._deviceRemoved.bind(this)));
+        this._connectionIDs.push(this._client.connect('connection-added', this._connectionAdded.bind(this)));
+        this._connectionIDs.push(this._client.connect('connection-removed', this._connectionRemoved.bind(this)));
     }
 
     _readDevices() {
@@ -470,6 +470,22 @@ var NetworkManger = class IPFinder_NetworkManger{
         }
 
         this._connectivityQueue.push(path);
+    }
+
+    destroy(){
+        this._connectionIDs.forEach( (connectionID) => {
+            if(connectionID){
+                this._client.disconnect(connectionID)
+                connectionID = null;
+            }
+        });
+
+        if(this._vpnSignalID){
+            this._vpnSignalID = this._vpnSection.disconnect(this._vpnSignalID);
+            this._vpnSignalID = null;
+        }
+
+        this._client.destroy();
     }
 }
 Signals.addSignalMethods(NetworkManger.prototype);
