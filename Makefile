@@ -1,10 +1,10 @@
 # Basic Makefile
 
 UUID = IP-Finder@linxgem33.com
-BASE_MODULES = convenience.js COPYING extension.js metadata.json README.md stylesheet.css prefs.js
+BASE_MODULES = convenience.js COPYING extension.js metadata.json README.md stylesheet.css prefs.js utils.js
 
 
-TOLOCALIZE = $
+TOLOCALIZE = extension.js prefs.js
 EXTRA_DIRECTORIES = icons
 MSGSRC = $(wildcard po/*.po)
 ifeq ($(strip $(DESTDIR)),)

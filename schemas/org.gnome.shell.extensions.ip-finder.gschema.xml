@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="public-ip-address">
-  <enum id="org.gnome.shell.extensions.public-ip-address.position">
-    <value value="0" nick="left"/>
-    <value value="1" nick="center"/>
-    <value value="2" nick="right"/>
-  </enum>
-  <schema path="/org/gnome/shell/extensions/public-ip-address/" id="org.gnome.shell.extensions.public-ip-address">
-    <key type="b" name="compact-mode">
-      <default>false</default>
-      <summary>Only show flag in toolbar</summary>
-    </key>
-    <key type="s" name="ip-address">
-      <default>''</default>
-      <summary>IP Address</summary>
-    </key>
-    <key name="position-in-panel" enum="org.gnome.shell.extensions.public-ip-address.position">
-      <default>'right'</default>
-      <summary>Position in Panel</summary>
-    </key>
-  </schema>
+    <enum id="org.gnome.shell.extensions.public-ip-address.position">
+        <value value="0" nick="left"/>
+        <value value="1" nick="center"/>
+        <value value="2" nick="right"/>
+    </enum>
+    <enum id="org.gnome.shell.extensions.public-ip-address.panel-actors">
+        <value value="0" nick="Flag and IP Address"/>
+        <value value="1" nick="Flag"/>
+        <value value="2" nick="IP Address"/>
+    </enum>
+    <schema path="/org/gnome/shell/extensions/public-ip-address/" id="org.gnome.shell.extensions.public-ip-address">
+        <key type="s" name="map-tile-coords">
+            <default>''</default>
+            <summary>Coords for map tile image</summary>
+        </key>
+        <key name="position-in-panel" enum="org.gnome.shell.extensions.public-ip-address.position">
+            <default>'right'</default>
+            <summary>Position in Panel</summary>
+        </key>
+        <key name="actors-in-panel" enum="org.gnome.shell.extensions.public-ip-address.panel-actors">
+            <default>'Flag and IP Address'</default>
+            <summary>Position in Panel</summary>
+        </key>
+    </schema>
 </schemalist>

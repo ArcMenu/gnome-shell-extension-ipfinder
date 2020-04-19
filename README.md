@@ -18,4 +18,4 @@ IP Finder is available under the terms of the GPL-3.0 license See [`COPYING`](ht
 
 ### Contributions & Suggestions
 
-Any suggestions for features and contributions to the continuing code development can be made on IP Finder's Github page via the issue tracker or code contributions via a pull request.
+Any suggestions for features and contributions to the continuing code development can be made on IP Finder's GitLab page via the issue tracker or code contributions via a pull request.
