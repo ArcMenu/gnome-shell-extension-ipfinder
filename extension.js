@@ -347,6 +347,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._networkManager.disconnect(this._networkNoConnectionID);
             this._networkNoConnectionID = null;
         } 
+        
+        this._networkManager.destroy();
 
         this._settings.run_dispose();
         this._settings = null;
