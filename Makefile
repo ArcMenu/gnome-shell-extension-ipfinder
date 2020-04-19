@@ -1,7 +1,7 @@
 # Basic Makefile
 
 UUID = IP-Finder@linxgem33.com
-BASE_MODULES = convenience.js COPYING extension.js metadata.json networkManager.js README.md stylesheet.css prefs.js utils.js
+BASE_MODULES = convenience.js COPYING extension.js metadata.json README.md stylesheet.css prefs.js utils.js
 
 
 TOLOCALIZE = extension.js prefs.js
