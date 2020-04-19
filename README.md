@@ -1,5 +1,4 @@
 ## IP Finder
------
 
 ### What is IP Finder Gnome Extension?
 
