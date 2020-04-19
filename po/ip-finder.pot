@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 13:06+0200\n"
+"POT-Creation-Date: 2020-04-19 08:34-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,74 +17,110 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:54
-msgid "Display Options"
+#: prefs.js:56
+msgid "Elements to show on the Panel"
 msgstr ""
 
-#: prefs.js:65
-msgid "Only Show Flag on Panel"
+#: prefs.js:64
+msgid "Flag and IP Address"
 msgstr ""
 
-#: prefs.js:76
+#: prefs.js:64
+msgid "Flag"
+msgstr ""
+
+#: prefs.js:64 extension.js:52
+msgid "IP Address"
+msgstr ""
+
+#: prefs.js:83
 msgid "IP Finder Position on the Panel"
 msgstr ""
 
-#: prefs.js:82
-msgid "left"
+#: prefs.js:93
+msgid "Left"
 msgstr ""
 
-#: prefs.js:82
-msgid "center"
+#: prefs.js:93
+msgid "Center"
 msgstr ""
 
-#: prefs.js:82
-msgid "right"
+#: prefs.js:93
+msgid "Right"
 msgstr ""
 
-#: prefs.js:98
-msgid "How Often to check for IP changes (in secs)"
+#: prefs.js:145
+msgid "IP Finder - ArcMenu Team"
 msgstr ""
 
-#: extension.js:126
+#: prefs.js:150
+msgid "Version: "
+msgstr ""
+
+#: prefs.js:154
+msgid "Displays useful information about your public IP Address"
+msgstr ""
+
+#: prefs.js:158
+msgid "GitLab Link"
+msgstr ""
+
+#: prefs.js:165
+msgid "ArcMenu Team on GitLab"
+msgstr ""
+
+#: prefs.js:224
+msgid "General"
+msgstr ""
+
+#: prefs.js:230
+msgid "About"
+msgstr ""
+
+#: extension.js:52 extension.js:320
 msgid "No Connection"
 msgstr ""
 
-#: extension.js:140
+#: extension.js:53
+msgid "Hostname"
+msgstr ""
+
+#: extension.js:54
+msgid "City"
+msgstr ""
+
+#: extension.js:55
+msgid "Region"
+msgstr ""
+
+#: extension.js:56
+msgid "Country"
+msgstr ""
+
+#: extension.js:57
+msgid "Location"
+msgstr ""
+
+#: extension.js:58
+msgid "Org"
+msgstr ""
+
+#: extension.js:59
+msgid "Postal"
+msgstr ""
+
+#: extension.js:60
+msgid "Timezone"
+msgstr ""
+
+#: extension.js:71
 msgid "IP Details"
 msgstr ""
 
-#: extension.js:202
-msgid "Preferences..."
+#: extension.js:274
+msgid "Loading new map tile..."
 msgstr ""
 
-#: extension.js
-msgid "ip"
-msgstr ""
-
-#: extension.js
-msgid "hostname"
-msgstr ""
-
-#: extension.js
-msgid "city"
-msgstr ""
-
-#: extension.js
-msgid "region"
-msgstr ""
-
-#: extension.js
-msgid "country"
-msgstr ""
-
-#: extension.js
-msgid "loc"
-msgstr ""
-
-#: extension.js
-msgid "org"
-msgstr ""
-
-#: extension.js
-msgid "postal"
+#: extension.js:284
+msgid "Error Generating Image!"
 msgstr ""

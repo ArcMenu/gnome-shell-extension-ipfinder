@@ -35,8 +35,7 @@ const Convenience = Me.imports.convenience;
 const Gettext = imports.gettext.domain('IP-Finder');
 const _ = Gettext.gettext;
 
-const SETTINGS_COMPACT_MODE = 'compact-mode';
-
+const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
 
 var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.Box {
@@ -51,26 +50,32 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
 
         this._settings = settings;
 
-        let checkContainerFrame = new FrameBox();
-        let checkContainer = new FrameBoxRow();
-        let checkLabel = new Gtk.Label({
-            label: _('Only Show Flag on Panel'),
+        let actorsInPanelContainerFrame = new FrameBox();
+        let actorsInPanelContainer = new FrameBoxRow();
+        let actorsInPanelLabel = new Gtk.Label({
+            label: _('Elements to show on the Panel'),
             halign: Gtk.Align.START,
             hexpand: true
         });
    
-        let checkButton = new Gtk.Switch({ 
-            halign: Gtk.Align.END,
-            tooltip_text: _("Disable Recently Installed Apps Indicator") 
+        let actorsInPanelSelector = new Gtk.ComboBoxText({ 
+            halign: Gtk.Align.END
+        });
+        [_("Flag and IP Address"), _("Flag"), _("IP Address")].forEach( (item) => {
+            actorsInPanelSelector.append_text(item);
         });
 
-        checkContainer.add(checkLabel);
-        checkContainer.add(checkButton);
-        checkContainerFrame.add(checkContainer);
+        actorsInPanelContainer.add(actorsInPanelLabel);
+        actorsInPanelContainer.add(actorsInPanelSelector);
+        actorsInPanelContainerFrame.add(actorsInPanelContainer);
 
-        this._settings.bind(SETTINGS_COMPACT_MODE, checkButton, 'active', Gio.SettingsBindFlags.DEFAULT);
+        actorsInPanelSelector.set_active(this._settings.get_enum(SETTINGS_ACTORS_IN_PANEL));
 
-        this.add(checkContainerFrame);
+        actorsInPanelSelector.connect('changed', () => {
+            this._settings.set_enum(SETTINGS_ACTORS_IN_PANEL, actorsInPanelSelector.get_active());
+        });
+
+        this.add(actorsInPanelContainerFrame);
 
         let positionContainerFrame = new FrameBox();
         let positionContainer = new FrameBoxRow();
@@ -100,7 +105,6 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
     }
 });
 
-// About Page
 var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box {
     _init(settings) {
         super._init({
@@ -123,21 +127,21 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             let logoPath = Me.path + '/icons/default_map.png';
             let [imageWidth, imageHeight] = [150, 150];
             let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(logoPath, imageWidth, imageHeight);
-            let arcMenuImage = new Gtk.Image({ pixbuf: pixbuf });
-            let arcMenuImageBox = new Gtk.VBox({
+            let ipFinderImage = new Gtk.Image({ pixbuf: pixbuf });
+            let ipFinderImageBox = new Gtk.VBox({
                 margin_top: 0,
                 margin_bottom: 0,
                 expand: false
             });
-            arcMenuImageBox.add(arcMenuImage);
+            ipFinderImageBox.add(ipFinderImage);
 
             // Create the info box
-            let arcMenuInfoBox = new Gtk.VBox({
+            let ipFinderInfoBox = new Gtk.VBox({
                 margin_top: 0,
                 margin_bottom: 5,
                 expand: false
             });
-            let arcMenuLabel = new Gtk.Label({
+            let ipFinderLabel = new Gtk.Label({
                 label: '<b>' + _('IP Finder - ArcMenu Team') + '</b>',
                 use_markup: true,
                 expand: false
@@ -179,12 +183,12 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             });
             this.creditsFrame.add(creditsLabel);
             
-            arcMenuInfoBox.add(arcMenuLabel);
-            arcMenuInfoBox.add(versionLabel);
-            arcMenuInfoBox.add(projectDescriptionLabel);
-            arcMenuInfoBox.add(projectLinkButton);
-            arcMenuInfoBox.add(arcMenuTeamButton);
-            arcMenuInfoBox.add(this.creditsScrollWindow);
+            ipFinderInfoBox.add(ipFinderLabel);
+            ipFinderInfoBox.add(versionLabel);
+            ipFinderInfoBox.add(projectDescriptionLabel);
+            ipFinderInfoBox.add(projectLinkButton);
+            ipFinderInfoBox.add(arcMenuTeamButton);
+            ipFinderInfoBox.add(this.creditsScrollWindow);
 
             // Create the GNU software box
             let gnuSofwareLabel = new Gtk.Label({
@@ -198,8 +202,8 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             });
             gnuSofwareLabelBox.add(gnuSofwareLabel);
 
-            this.add(arcMenuImageBox);
-            this.add(arcMenuInfoBox);
+            this.add(ipFinderImageBox);
+            this.add(ipFinderInfoBox);
             this.add(gnuSofwareLabelBox);
     }
 });
@@ -230,6 +234,7 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
         this.add(notebook);
     }
 });
+
 function init() {
   Convenience.initTranslations("IP-Finder");
 }
