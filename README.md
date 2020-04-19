@@ -1,6 +1,4 @@
-![](https://gitlab.com/LinxGem33/Neon/-/raw/master/ip-finder/new-ip-finder-wide-banner2.png)
-
------
+## IP Finder
 
 ### What is IP Finder Gnome Extension?
 
