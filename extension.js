@@ -274,7 +274,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                     text: _("Loading new map tile..."),
                     x_align: Clutter.ActorAlign.CENTER,
                 }));
-                Utils.__getMapTile(this._session, tileCoordsUrl, (err, res) => {
+                Utils._getMapTile(this._session, tileCoordsUrl, (err, res) => {
                     this._mapInfo.destroy_all_children();
                     if(err){
                         //global.log("Tile Error - New Tile Coords");
