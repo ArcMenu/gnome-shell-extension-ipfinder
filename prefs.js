@@ -212,8 +212,8 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
     _init() {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
-            spacing: 5,
-            border_width: 5
+            spacing: 0,
+            border_width: 0
         });
         this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
         
