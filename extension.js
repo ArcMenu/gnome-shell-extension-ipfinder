@@ -339,7 +339,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         return file.query_exists(null);
     }
 
-    destroy() {
+    _onDestroy() {
         Main.panel.statusArea['ip-menu'] = null;
 
         //restore GNOME default syncConnectivity Function
@@ -347,6 +347,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
         this._settings.run_dispose();
         this._settings = null;
+
         super._onDestroy();
     }
 

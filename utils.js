@@ -73,17 +73,14 @@ function _getTileNumber(loc) {
 }
 
 function _getMapTile(session, tileInfo, callback) {
-    //global.log("Loading new Map Tile...");
     let file = Gio.file_new_for_path(Me.path + '/icons/latest_map.png');
 
     let uri = new Soup.URI("https://a.tile.openstreetmap.org/" + tileInfo +".png");
     var request = new Soup.Message({ method: 'GET', uri: uri });
 
     session.queue_message(request, (session, message) => {
-        if (message.status_code !== Soup.Status.OK) {
-            //global.log("ERROR GETTING MAP TILE IMAGE");
+        if (message.status_code !== Soup.Status.OK) 
             callback(message.status_code);
-        }
         else{
             let fstream = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
             fstream.write_bytes(message.response_body_data, null);
@@ -91,15 +88,4 @@ function _getMapTile(session, tileInfo, callback) {
             callback(null);
         }
     });
-}
-
-function ensureActiveConnectionProps(active) {
-    if (!active._primaryDevice) {
-        let devices = active.get_devices();
-        if (devices.length > 0) {
-            // This list is guaranteed to have at most one device in it.
-            let device = devices[0]._delegate;
-            active._primaryDevice = device;
-        }
-    }
 }
