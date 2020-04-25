@@ -74,27 +74,18 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
 
         this._setPrefs();
-
+        
         this._network = Main.panel.statusArea['aggregateMenu']._network;
-        this._defaultSyncConnectivity = this._network._syncConnectivity;
-        this._network._syncConnectivity = () => {
-            if (this._network._mainConnection == null ||
-                this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED) {
-                if(this._connection){
-                    //global.log("No Connection");
-                    this._loadDetails(null);
-                    this._connection = false;
-                    this._defaultSyncConnectivity;
-                }
-                return;
+        if (this._network._mainConnection == null ||
+            this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED){
+                this._startUpCompleteID = Main.layoutManager.connect('startup-complete', ()=>{
+                    this.establishNetworkConnectivity();
+                });
             }
-            this._defaultSyncConnectivity;
-            if(!this._connection){
-                //global.log("Connection Changed");
-                this._connection = true;
-                this._getIpInfo();
-            }
-        }
+        else
+            this.establishNetworkConnectivity();
+
+
         let hbox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.FILL,
@@ -208,6 +199,30 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         });
         this._showActorsInPanel();
         Main.panel.addToStatusArea('ip-menu', this, 1, this._menuPosition);
+    }
+
+    establishNetworkConnectivity(){
+        this._network = Main.panel.statusArea['aggregateMenu']._network;
+        this._defaultSyncConnectivity = this._network._syncConnectivity;
+        this._network._syncConnectivity = () => {
+            if (this._network._mainConnection == null ||
+                this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED) {
+                if(this._connection){
+                    //global.log("No Connection");
+                    this._loadDetails(null);
+                    this._connection = false;
+                    this._defaultSyncConnectivity;
+                }
+                return;
+            }
+            this._defaultSyncConnectivity;
+            if(!this._connection){
+                //global.log("Connection Changed");
+                this._connection = true;
+                this._getIpInfo();
+            }
+        };
+        this._network._syncConnectivity();
     }
 
     _getIpInfo(){
@@ -339,16 +354,19 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         return file.query_exists(null);
     }
 
-    _onDestroy() {
-        Main.panel.statusArea['ip-menu'] = null;
+    disable() {
+        if(this._startUpCompleteID){
+            Main.layoutManager.disconnect(this._startUpCompleteID);
+            this._startUpCompleteID = null;
+        }
 
-        //restore GNOME default syncConnectivity Function
         this._network._syncConnectivity = this._defaultSyncConnectivity;
+        this._network._syncConnectivity();
+        delete this._defaultSyncConnectivity;
+        this._network = null;
 
         this._settings.run_dispose();
         this._settings = null;
-
-        super._onDestroy();
     }
 
     _resetPanelPos() {
@@ -388,5 +406,7 @@ function enable() {
 }
 
 function disable() {
+    _indicator.disable();
     _indicator.destroy();
+    _indicator = null;
 }
