@@ -49,7 +49,7 @@ const DEFAULT_MAP_TILE = Me.path + '/icons/default_map.png';
 const LATEST_MAP_TILE = Me.path + '/icons/latest_map.png';
 
 const DEFAULT_DATA = {
-    ip: { name: _("IP Address"), text: _("No Connection")},
+    ip: { name: _("IP Address"), text: _("Loading IP Details")},
     hostname: { name: _("Hostname"), text: ''},
     city: { name: _("City"), text: ''},
     region: { name: _("Region"), text: ''},
@@ -72,40 +72,31 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._textureCache = St.TextureCache.get_default();
         this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
         this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
-
+        this._connection = false;
         this._setPrefs();
-
+        
         this._network = Main.panel.statusArea['aggregateMenu']._network;
-        this._defaultSyncConnectivity = this._network._syncConnectivity;
-        this._network._syncConnectivity = () => {
-            if (this._network._mainConnection == null ||
-                this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED) {
-                if(this._connection){
-                    //global.log("No Connection");
-                    this._loadDetails(null);
-                    this._connection = false;
-                    this._defaultSyncConnectivity;
-                }
-                return;
+        if (this._network._mainConnection == null ||
+            this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED){
+                this._startUpCompleteID = Main.layoutManager.connect('startup-complete', ()=>{
+                    this.establishNetworkConnectivity();
+                });
             }
-            this._defaultSyncConnectivity;
-            if(!this._connection){
-                //global.log("Connection Changed");
-                this._connection = true;
-                this._getIpInfo();
-            }
+        else{
+            this.establishNetworkConnectivity();
         }
+
         let hbox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.FILL,
         });
 
         this._icon = new St.Icon({
-          gicon: Gio.icon_new_for_string(Me.path + '/icons/flags/US.png'),
-          icon_size: ICON_SIZE,
-          x_align: Clutter.ActorAlign.START,
-          y_align: Clutter.ActorAlign.CENTER,
-          style: "padding-right: 5px; padding-top: 2px;"
+            icon_name: 'network-wired-acquiring-symbolic',
+            icon_size: ICON_SIZE,
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: "padding-right: 5px; padding-top: 2px;"
         });
 
         this.ipAddr = DEFAULT_DATA.ip.text;
@@ -193,10 +184,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             style_class: 'button' 
         });
         this._refreshButton.connect('clicked',  ()=> {
-            if(this._connection)
-                this._getIpInfo();
-            else
-                this._loadDetails(null);
+            //global.log("IP-Finder: Refresh Button Clicked - Updating IP Details...");
+            this._getIpInfo(0);
         });
         buttonBox.add_actor(this._refreshButton);
         this.menu.addMenuItem(buttonBox);
@@ -210,24 +199,56 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         Main.panel.addToStatusArea('ip-menu', this, 1, this._menuPosition);
     }
 
-    _getIpInfo(){
-        if(!this.gettingIpInfo){
-            //global.log("Getting IP Info...");
-            this.gettingIpInfo = true;
-            Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
-                //global.log("IP Address Found - " + ipAddr);
+    establishNetworkConnectivity(){
+        this._network = Main.panel.statusArea['aggregateMenu']._network;
+        this._network.ipFinderActiveConnectionsID = this._network._client.connect('notify::active-connections', () => {
+            //global.log("IP-Finder: Network Connection Change Detected!");
+            this._getIpInfo();
+        });
+    }
+
+    _getIpInfo(timeout = 2000){
+        this._label.text = DEFAULT_DATA.ip.text;
+        this._icon.icon_name = 'network-wired-acquiring-symbolic';
+        this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
+        GLib.timeout_add(0, timeout, () => {
+            if(!this.gettingIpInfo){
+                //global.log("IP-Finder: Getting IP Address...");
+                this.gettingIpInfo = true;
+                Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
+                    if(ipAddrError === null){
+                        //global.log("IP-Finder: Found IP Address - " + ipAddr);
+                        Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
+                            //global.log("IP-Finder: Getting IP Details...");
+                            if(ipDetailsError === null){
+                                //global.log("IP-Finder: Found IP Details. Creating new layout...");
+                                this._loadDetails(ipDetails);
+                            }
+                            else{
+                                //this.logSoupMessage(ipDetailsError, "Getting IP Details");
+                                this._loadDetails(null);
+                            }
+                                
+                        });
+                    }
+                    else{
+                        //this.logSoupMessage(ipAddrError, "Getting IP Address");
+                        this._loadDetails(null);
+                    }      
+                });
+            }
+            GLib.timeout_add(0, timeout, () => {
                 this.gettingIpInfo = false;
-                if(ipAddrError === null){
-                    Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
-                        if(ipDetailsError === null)
-                            this._loadDetails(ipDetails);
-                        else
-                            this._loadDetails(null);
-                    });
-                }
-                else
-                    this._loadDetails(null);
+                return GLib.SOURCE_REMOVE;
             });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    logSoupMessage(error, functionName){
+        for (let message in Soup.Status) {
+            if (Soup.Status[message] === error)
+                global.log("IP-Finder: Error on " + functionName + " - Soup.Status." + message);
         }
     }
 
@@ -268,7 +289,6 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             let tileNumber = Utils._getTileNumber(data['loc']);
             let tileCoords = tileNumber.x + "," + tileNumber.y;
             let tileCoordsUrl = tileNumber.z + "/" + tileNumber.x + "/" + tileNumber.y;
-            //global.log(tileCoordsUrl);
 
             if(tileCoords !== this._settings.get_string('map-tile-coords') || !this._checkLatestFileMapExists()){
                 this._mapInfo.destroy_all_children();
@@ -279,9 +299,10 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                     x_align: Clutter.ActorAlign.CENTER,
                 }));
                 Utils._getMapTile(this._session, tileCoordsUrl, (err, res) => {
+                    //global.log("IP-Finder: Getting Tile Map...")
                     this._mapInfo.destroy_all_children();
                     if(err){
-                        //global.log("Tile Error - New Tile Coords");
+                        //this.logSoupMessage(ipAddrError, "Getting Tile Map");
                         this._mapInfo.add_actor(this._getMapTile(DEFAULT_MAP_TILE));
                         this._mapInfo.add_actor(new St.Label({
                             style_class: 'ip-info-key', 
@@ -290,20 +311,20 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                         }));
                     }
                     else{
-                        //global.log("No Tile Error - New Tile Coords");
+                        //global.log("IP-Finder: New IP Location - Using New Tile Map");
                         this._settings.set_string('map-tile-coords', tileCoords);
                         this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
                     }  
                 });
             }
             else{
-                //global.log("Same Tile Coords");
+                //global.log("IP-Finder: Same IP Location - Using Previous Tile Map");
                 this._mapInfo.destroy_all_children();
                 this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
             }
         }  
         else{
-            this._label.text = DEFAULT_DATA.ip.text;
+            this._label.text = _("No Connection");
             this._icon.icon_name = 'network-offline-symbolic';
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
@@ -339,16 +360,18 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         return file.query_exists(null);
     }
 
-    _onDestroy() {
-        Main.panel.statusArea['ip-menu'] = null;
-
-        //restore GNOME default syncConnectivity Function
-        this._network._syncConnectivity = this._defaultSyncConnectivity;
+    disable() {
+        if(this._network.ipFinderActiveConnectionsID){
+            this._network._client.disconnect(this._network.ipFinderActiveConnectionsID);
+            this._network.ipFinderActiveConnectionsID = null;
+        }
+        if(this._startUpCompleteID){
+            Main.layoutManager.disconnect(this._startUpCompleteID);
+            this._startUpCompleteID = null;
+        }
 
         this._settings.run_dispose();
         this._settings = null;
-
-        super._onDestroy();
     }
 
     _resetPanelPos() {
@@ -388,5 +411,7 @@ function enable() {
 }
 
 function disable() {
+    _indicator.disable();
     _indicator.destroy();
+    _indicator = null;
 }

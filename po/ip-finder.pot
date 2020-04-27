@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-19 08:34-0400\n"
+"POT-Creation-Date: 2020-04-27 16:00-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,8 +77,8 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: extension.js:52 extension.js:320
-msgid "No Connection"
+#: extension.js:52
+msgid "Loading IP Details"
 msgstr ""
 
 #: extension.js:53
@@ -117,10 +117,14 @@ msgstr ""
 msgid "IP Details"
 msgstr ""
 
-#: extension.js:274
+#: extension.js:298
 msgid "Loading new map tile..."
 msgstr ""
 
-#: extension.js:284
+#: extension.js:309
 msgid "Error Generating Image!"
+msgstr ""
+
+#: extension.js:327 extension.js:345
+msgid "No Connection"
 msgstr ""
