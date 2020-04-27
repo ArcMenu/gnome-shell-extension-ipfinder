@@ -49,7 +49,7 @@ const DEFAULT_MAP_TILE = Me.path + '/icons/default_map.png';
 const LATEST_MAP_TILE = Me.path + '/icons/latest_map.png';
 
 const DEFAULT_DATA = {
-    ip: { name: _("IP Address"), text: _("No Connection")},
+    ip: { name: _("IP Address"), text: _("Loading IP Details")},
     hostname: { name: _("Hostname"), text: ''},
     city: { name: _("City"), text: ''},
     region: { name: _("Region"), text: ''},
@@ -92,11 +92,11 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         });
 
         this._icon = new St.Icon({
-          gicon: Gio.icon_new_for_string(Me.path + '/icons/flags/US.png'),
-          icon_size: ICON_SIZE,
-          x_align: Clutter.ActorAlign.START,
-          y_align: Clutter.ActorAlign.CENTER,
-          style: "padding-right: 5px; padding-top: 2px;"
+            icon_name: 'network-wired-acquiring-symbolic',
+            icon_size: ICON_SIZE,
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: "padding-right: 5px; padding-top: 2px;"
         });
 
         this.ipAddr = DEFAULT_DATA.ip.text;
@@ -204,6 +204,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     _getIpInfo(timeout = 1000){
+        this._label.text = DEFAULT_DATA.ip.text;
+        this._icon.icon_name = 'network-wired-acquiring-symbolic';
         this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
         GLib.timeout_add(0, timeout, () => {
             if(!this.gettingIpInfo){
@@ -300,7 +302,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             }
         }  
         else{
-            this._label.text = DEFAULT_DATA.ip.text;
+            this._label.text = _("No Connection");
             this._icon.icon_name = 'network-offline-symbolic';
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
