@@ -184,6 +184,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             style_class: 'button' 
         });
         this._refreshButton.connect('clicked',  ()=> {
+            global.log("IP-Finder: Refresh Button Clicked - Updating IP Details...");
             this._getIpInfo(0);
         });
         buttonBox.add_actor(this._refreshButton);
@@ -200,35 +201,55 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
     establishNetworkConnectivity(){
         this._network = Main.panel.statusArea['aggregateMenu']._network;
-        this._network.ipFinderActiveConnectionsID = this._network._client.connect('notify::active-connections', () => this._getIpInfo());
+        this._network.ipFinderActiveConnectionsID = this._network._client.connect('notify::active-connections', () => {
+            global.log("IP-Finder: Network Connection Change Detected!");
+            this._getIpInfo();
+        });
     }
 
-    _getIpInfo(timeout = 1000){
+    _getIpInfo(timeout = 2000){
         this._label.text = DEFAULT_DATA.ip.text;
         this._icon.icon_name = 'network-wired-acquiring-symbolic';
         this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
         GLib.timeout_add(0, timeout, () => {
             if(!this.gettingIpInfo){
-                global.log("Getting IP Info...");
+                global.log("IP-Finder: Getting IP Address...");
                 this.gettingIpInfo = true;
                 Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
                     if(ipAddrError === null){
-                        global.log("IP Address Found - " + ipAddr);
+                        global.log("IP-Finder: Found IP Address - " + ipAddr);
                         Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
-                            if(ipDetailsError === null)
+                            global.log("IP-Finder: Getting IP Details...");
+                            if(ipDetailsError === null){
+                                global.log("IP-Finder: Found IP Details. Creating new layout...");
                                 this._loadDetails(ipDetails);
-                            else
+                            }
+                            else{
+                                this.logSoupMessage(ipDetailsError, "Getting IP Details");
                                 this._loadDetails(null);
+                            }
+                                
                         });
                     }
                     else{
-                        global.log("IP Address Error - " + ipAddrError);
+                        this.logSoupMessage(ipAddrError, "Getting IP Address");
                         this._loadDetails(null);
                     }      
                 });
             }
+            GLib.timeout_add(0, timeout, () => {
+                this.gettingIpInfo = false;
+                return GLib.SOURCE_REMOVE;
+            });
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    logSoupMessage(error, functionName){
+        for (let message in Soup.Status) {
+            if (Soup.Status[message] === error)
+                global.log("IP-Finder: Error on " + functionName + " - Soup.Status." + message);
+        }
     }
 
     _loadDetails(data){
@@ -278,9 +299,10 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                     x_align: Clutter.ActorAlign.CENTER,
                 }));
                 Utils._getMapTile(this._session, tileCoordsUrl, (err, res) => {
+                    global.log("IP-Finder: Getting Tile Map...")
                     this._mapInfo.destroy_all_children();
                     if(err){
-                        global.log("Tile Error - New Tile Coords");
+                        this.logSoupMessage(ipAddrError, "Getting Tile Map");
                         this._mapInfo.add_actor(this._getMapTile(DEFAULT_MAP_TILE));
                         this._mapInfo.add_actor(new St.Label({
                             style_class: 'ip-info-key', 
@@ -289,14 +311,14 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                         }));
                     }
                     else{
-                        global.log("No Tile Error - New Tile Coords");
+                        global.log("IP-Finder: New IP Location - Using New Tile Map");
                         this._settings.set_string('map-tile-coords', tileCoords);
                         this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
                     }  
                 });
             }
             else{
-                global.log("Same Tile Coords");
+                global.log("IP-Finder: Same IP Location - Using Previous Tile Map");
                 this._mapInfo.destroy_all_children();
                 this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
             }
@@ -324,7 +346,6 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                 x_align: Clutter.ActorAlign.CENTER,
             }));
         }
-        this.gettingIpInfo = false;
     }
     
     _getMapTile(mapTile){
