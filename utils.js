@@ -45,7 +45,6 @@ function _getIP(session, callback) {
 }
 
 function _getIPDetails(session, ipAddr, callback) {
-    //global.log("https://ipinfo.io/" + ipAddr);
     let uri = new Soup.URI("https://ipinfo.io/" + ipAddr +"/json");
     var request = new Soup.Message({ method: 'GET', uri: uri });
 
