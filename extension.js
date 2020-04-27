@@ -210,9 +210,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                 global.log("Getting IP Info...");
                 this.gettingIpInfo = true;
                 Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
-                    global.log("IP Address Found - " + ipAddr);
-                    global.log("IP Address Error - " + ipAddrError);
                     if(ipAddrError === null){
+                        global.log("IP Address Found - " + ipAddr);
                         Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
                             if(ipDetailsError === null)
                                 this._loadDetails(ipDetails);
@@ -221,10 +220,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                         });
                     }
                     else{
-                        global.log("IP Address ERROR");
+                        global.log("IP Address Error - " + ipAddrError);
                         this._loadDetails(null);
-                    }
-                        
+                    }      
                 });
             }
             return GLib.SOURCE_REMOVE;
@@ -268,7 +266,6 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             let tileNumber = Utils._getTileNumber(data['loc']);
             let tileCoords = tileNumber.x + "," + tileNumber.y;
             let tileCoordsUrl = tileNumber.z + "/" + tileNumber.x + "/" + tileNumber.y;
-            global.log(tileCoordsUrl);
 
             if(tileCoords !== this._settings.get_string('map-tile-coords') || !this._checkLatestFileMapExists()){
                 this._mapInfo.destroy_all_children();
