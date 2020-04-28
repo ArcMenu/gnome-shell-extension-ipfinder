@@ -21,7 +21,7 @@ msgstr ""
 
 #: extension.js:52 prefs.js:64
 msgid "IP Address"
-msgstr "Adresse I.P"
+msgstr "Adresse IP"
 
 #: extension.js:52
 msgid "Loading IP Details"
