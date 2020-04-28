@@ -113,7 +113,7 @@ msgstr "Version : "
 
 #: prefs.js:154
 msgid "Displays useful information about your public IP Address"
-msgstr "Afficher des informations utiles sur votre adresse IP publique"
+msgstr "Affiche des informations utiles sur votre adresse IP publique"
 
 #: prefs.js:158
 msgid "GitLab Link"
