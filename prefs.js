@@ -37,6 +37,8 @@ const _ = Gettext.gettext;
 
 const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
+const SETTINGS_PANEL_VPN_ICONS = 'panel-vpn-icons';
+const SETTINGS_PANEL_VPN_COLORS = 'panel-vpn-colors';
 
 var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.Box {
     _init(settings) {
@@ -96,12 +98,47 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
 
         positionSelector.set_active(this._settings.get_enum(SETTINGS_POSITION));
 
-
         positionSelector.connect('changed', () => {
             this._settings.set_enum(SETTINGS_POSITION, positionSelector.get_active());
         });
 
         this.add(positionContainerFrame);
+
+        let panelVpnIconsFrame = new FrameBox();
+        let panelVpnIconsContainer = new FrameBoxRow();
+        let panelVpnIconsLabel = new Gtk.Label({
+            label: _('VPN Status Icons in Panel'),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        let panelVpnIconsSwitch = new Gtk.Switch();
+        panelVpnIconsSwitch.set_active(this._settings.get_boolean(SETTINGS_PANEL_VPN_ICONS))
+        panelVpnIconsSwitch.connect('notify::active', (widget) => {
+            this._settings.set_boolean(SETTINGS_PANEL_VPN_ICONS, widget.get_active());
+        });
+
+        panelVpnIconsContainer.add(panelVpnIconsLabel);
+        panelVpnIconsContainer.add(panelVpnIconsSwitch);
+        panelVpnIconsFrame.add(panelVpnIconsContainer);
+        this.add(panelVpnIconsFrame);
+
+        let panelVpnColorsFrame = new FrameBox();
+        let panelVpnColorsContainer = new FrameBoxRow();
+        let panelVpnColorsLabel = new Gtk.Label({
+            label: _('VPN Status Colors in Panel'),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        let panelVpnColorsSwitch = new Gtk.Switch();
+        panelVpnColorsSwitch.set_active(this._settings.get_boolean(SETTINGS_PANEL_VPN_COLORS))
+        panelVpnColorsSwitch.connect('notify::active', (widget) => {
+            this._settings.set_boolean(SETTINGS_PANEL_VPN_COLORS, widget.get_active());
+        });
+
+        panelVpnColorsContainer.add(panelVpnColorsLabel);
+        panelVpnColorsContainer.add(panelVpnColorsSwitch);
+        panelVpnColorsFrame.add(panelVpnColorsContainer);
+        this.add(panelVpnColorsFrame);
     }
 });
 

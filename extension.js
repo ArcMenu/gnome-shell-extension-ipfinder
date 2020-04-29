@@ -28,7 +28,7 @@
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const {Clutter, GLib, Gio, GObject, Soup, Shell, St} = imports.gi;
+const {Clutter, GLib, Gio, GObject, NM, Soup, Shell, St} = imports.gi;
 const Clipboard = St.Clipboard.get_default();
 const CLIPBOARD_TYPE = St.ClipboardType.CLIPBOARD;
 const Convenience = Me.imports.convenience;
@@ -44,6 +44,8 @@ const ICON_SIZE = 16;
 
 const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
+const SETTINGS_PANEL_VPN_ICONS = 'panel-vpn-icons';
+const SETTINGS_PANEL_VPN_COLORS = 'panel-vpn-colors';
 
 const DEFAULT_MAP_TILE = Me.path + '/icons/default_map.png';
 const LATEST_MAP_TILE = Me.path + '/icons/latest_map.png';
@@ -75,18 +77,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._connection = false;
         this._setPrefs();
         
-        this._network = Main.panel.statusArea['aggregateMenu']._network;
-        if (this._network._mainConnection == null ||
-            this._network._mainConnection.state != imports.gi.NM.ActiveConnectionState.ACTIVATED){
-                this._startUpCompleteID = Main.layoutManager.connect('startup-complete', ()=>{
-                    this.establishNetworkConnectivity();
-                });
-            }
-        else{
-            this.establishNetworkConnectivity();
-        }
+        NM.Client.new_async(null, this.establishNetworkConnectivity.bind(this));
 
-        let hbox = new St.BoxLayout({
+        this.panelBox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.FILL,
         });
@@ -96,7 +89,16 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             icon_size: ICON_SIZE,
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
-            style: "padding-right: 5px; padding-top: 2px;"
+            style: "padding-right: 5px; padding-top: 3px;"
+        });
+
+        this._vpnIcon = new St.Icon({
+            gicon: Gio.icon_new_for_string(Me.path +"/icons/vpn-off-symbolic.svg"),
+            icon_size: ICON_SIZE,
+            x_align: Clutter.ActorAlign.START,
+            y_align: Clutter.ActorAlign.CENTER,
+            style_class: this._vpnColors ? "ip-info-vpn-off" : null,
+            style: "padding-right: 5px;"
         });
 
         this.ipAddr = DEFAULT_DATA.ip.text;
@@ -106,11 +108,10 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             y_align: Clutter.ActorAlign.CENTER
         });
 
-        
-        hbox.add_actor(this._icon);
-        hbox.add_actor(this._label);
+        this.panelBox.add_actor(this._icon);
+        this.panelBox.add_actor(this._label);
 
-        this.add_actor(hbox);
+        this.add_actor(this.panelBox);
 
         //main containers
         let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
@@ -193,15 +194,16 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._settings.connect('changed', ()=> {
             this._setPrefs();
             this._resetPanelPos();
-            this._showActorsInPanel()
+            this._showActorsInPanel();
+            this._updatePanelStatus();
         });
         this._showActorsInPanel();
         Main.panel.addToStatusArea('ip-menu', this, 1, this._menuPosition);
     }
 
-    establishNetworkConnectivity(){
-        this._network = Main.panel.statusArea['aggregateMenu']._network;
-        this._network.ipFinderActiveConnectionsID = this._network._client.connect('notify::active-connections', () => {
+    establishNetworkConnectivity(obj, result){
+        this._client = NM.Client.new_finish(result);
+        this.activeConnectionsID = this._client.connect('notify::active-connections', () => {
             //global.log("IP-Finder: Network Connection Change Detected!");
             this._getIpInfo();
         });
@@ -209,10 +211,28 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
     _getIpInfo(timeout = 2000){
         this._label.text = DEFAULT_DATA.ip.text;
+        this._label.style_class = null;
         this._icon.icon_name = 'network-wired-acquiring-symbolic';
-        this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
+        this._vpnIcon.style_class = null;
+        if(this.panelBox.contains(this._vpnIcon))
+            this.panelBox.remove_actor(this._vpnIcon);
+        
         GLib.timeout_add(0, timeout, () => {
             if(!this.gettingIpInfo){
+                this.vpnName = null;
+
+                let activeConnections = this._client.get_active_connections() || [];
+                let vpnConnections = activeConnections.filter(
+                    a => a.vpn || a.type === 'wireguard');
+                vpnConnections.forEach(a => {
+                    if(a.connection){
+                        this.vpnName = a.id;
+                    }
+                });
+                this.isVPN = vpnConnections.length > 0 ? true : false;
+
+                this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
+
                 //global.log("IP-Finder: Getting IP Address...");
                 this.gettingIpInfo = true;
                 Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
@@ -227,8 +247,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                             else{
                                 //this.logSoupMessage(ipDetailsError, "Getting IP Details");
                                 this._loadDetails(null);
-                            }
-                                
+                            }  
                         });
                     }
                     else{
@@ -259,21 +278,74 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._icon.icon_name = '';
             this._icon.gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + data.country + '.png');
             this.ipInfoBox.destroy_all_children();
+
+            if(this.isVPN){
+                this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-on-symbolic.svg");
+                this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-on" : null;
+            }
+            else{
+                this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-off-symbolic.svg");
+                this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-off" : null;
+            }
+
+            if(this._vpnIcons){
+                if(!this.panelBox.contains(this._vpnIcon))
+                    this.panelBox.insert_child_at_index(this._vpnIcon, 1);
+            }
+
+            if(this._vpnColors)
+                this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
+
+            let ipInfoRow = new St.BoxLayout();
+            this.ipInfoBox.add_actor(ipInfoRow);
+            
+            let label = new St.Label({
+                style_class: this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off',
+                text: _("VPN") + ': ',
+                x_align: Clutter.ActorAlign.FILL,
+                y_align: Clutter.ActorAlign.START,
+                y_expand: false,
+            });
+            ipInfoRow.add_actor(label);
+            let vpnLabelText;
+            if(this.isVPN)
+                vpnLabelText = this.vpnName ? this.vpnName : _("On");
+            else
+                vpnLabelText =  _("Off");
+            let vpnLabel = new St.Label({
+                x_align: Clutter.ActorAlign.FILL,
+                y_align: Clutter.ActorAlign.START,
+                x_expand: true,
+                y_expand: false,
+                style_class: this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off', 
+                text: vpnLabelText,
+            });
+            ipInfoRow.add_actor(vpnLabel);
+            let vpnIcon = new St.Icon({
+                gicon: Gio.icon_new_for_string((this.isVPN ? (Me.path +"/icons/vpn-on-symbolic.svg") : (Me.path +"/icons/vpn-off-symbolic.svg"))),
+                style_class: this.isVPN ? 'popup-menu-icon ip-info-vpn-on' : 'popup-menu-icon ip-info-vpn-off'
+            });
+            ipInfoRow.add_actor(vpnIcon);
+            
             for(let key in DEFAULT_DATA){
                 if(data[key]){
                     let ipInfoRow = new St.BoxLayout();
                     this.ipInfoBox.add_actor(ipInfoRow);
                     
                     let label = new St.Label({
-                        style_class: 'ip-info-key', 
+                        style_class: 'ip-info-key',
                         text: DEFAULT_DATA[key].name + ': ',
                         x_align: Clutter.ActorAlign.FILL,
+                        y_align: Clutter.ActorAlign.CENTER,
+                        y_expand: true,
                     });
                     ipInfoRow.add_actor(label);
     
                     let infoLabel = new St.Label({
                         x_align: Clutter.ActorAlign.FILL,
+                        y_align: Clutter.ActorAlign.CENTER,
                         x_expand: true,
+                        y_expand: true,
                         style_class: 'ip-info-value', 
                         text: data[key]
                     });
@@ -324,8 +396,12 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             }
         }  
         else{
+            this._label.style_class = null;
             this._label.text = _("No Connection");
             this._icon.icon_name = 'network-offline-symbolic';
+            this._vpnIcon.style_class = null;
+            if(this.panelBox.contains(this._vpnIcon))
+                this.panelBox.remove_actor(this._vpnIcon);
             this.ipInfoBox.destroy_all_children();
             for(let key in DEFAULT_DATA){
                 let ipInfoRow = new St.BoxLayout();
@@ -361,9 +437,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     disable() {
-        if(this._network.ipFinderActiveConnectionsID){
-            this._network._client.disconnect(this._network.ipFinderActiveConnectionsID);
-            this._network.ipFinderActiveConnectionsID = null;
+        if(this.activeConnectionsID){
+            this._client.disconnect(this.activeConnectionsID);
+            this.activeConnectionsID = null;
         }
         if(this._startUpCompleteID){
             Main.layoutManager.disconnect(this._startUpCompleteID);
@@ -391,12 +467,35 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         else if(this._actorsInPanel === PANEL_ACTORS.IP){
             this._icon.hide();
             this._label.show();
+        }            
+    }
+
+    _updatePanelStatus(){
+        if(this._vpnColors){
+            this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
+            this._vpnIcon.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
+        }   
+        else{
+            this._vpnIcon.style_class = null;
+            this._label.style_class = null;
+        }
+            
+        if(this._vpnIcons){
+            global.log("Update ICONS")
+            if(!this.panelBox.contains(this._vpnIcon))
+                this.panelBox.insert_child_at_index(this._vpnIcon, 1);
+        }
+        else{
+            if(this.panelBox.contains(this._vpnIcon))
+                this.panelBox.remove_actor(this._vpnIcon);
         }
     }
 
     _setPrefs(){  
         this._actorsInPanel = this._settings.get_enum(SETTINGS_ACTORS_IN_PANEL);     
         this._menuPosition = this._settings.get_string(SETTINGS_POSITION);
+        this._vpnIcons = this._settings.get_boolean(SETTINGS_PANEL_VPN_ICONS)
+        this._vpnColors = this._settings.get_boolean(SETTINGS_PANEL_VPN_COLORS)
     }
 });
 

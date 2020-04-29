@@ -15,6 +15,14 @@
             <default>''</default>
             <summary>Coords for map tile image</summary>
         </key>
+        <key type="b" name="panel-vpn-icons">
+            <default>true</default>
+            <summary>Enable/Disable VPN status icons in the panel</summary>
+        </key>
+        <key type="b" name="panel-vpn-colors">
+            <default>true</default>
+            <summary>Enable/Disable VPN status colors for IP text in the panel</summary>
+        </key>
         <key name="position-in-panel" enum="org.gnome.shell.extensions.public-ip-address.position">
             <default>'right'</default>
             <summary>Position in Panel</summary>
