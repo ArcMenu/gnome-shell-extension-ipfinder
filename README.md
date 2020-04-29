@@ -44,6 +44,14 @@ Newly developed revised code base using open technologies and using API's for Pu
 
 -----
 
+[![GNU GPL Image](https://www.gnu.org/graphics/slickgnu.tiny.png)](http://www.gnu.org/licenses/lgpl-3.0.html)  
+### License & Terms ![](https://gitlab.com/LinxGem33/IP-Finder/raw/master/screens/Copyleft-16.png)
+
+Arc Menu is available under the terms of the GPL-3.0 license See [`COPYING`](https://gitlab.com/LinxGem33/IP-Finder/blob/master/COPYING) for details.
+
+Arc-Menu is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. 
+
+
 ### License & Terms ![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/Copyleft-16.png)
 
 IP Finder is available under the terms of the GPL-3.0 license See [`COPYING`](https://gitlab.com/LinxGem33/IP-Finder/blob/master/COPYING) for details.
