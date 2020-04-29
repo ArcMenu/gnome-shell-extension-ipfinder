@@ -30,6 +30,19 @@ Newly developed revised code base using open technologies and using API's for Pu
 -----
 
 
+### Installation
+
+#### To install the most recent official release: Visit IP Finder on the [Official GNOME Extensions](https://extensions.gnome.org/extension/2983/ip-finder/) website.
+
+- **To install a Development version from source**: Please see the: [Install From Source wiki Guide](https://gitlab.com/LinxGem33/Arc-Menu/-/wikis/Install%20From%20Source%20Guide).
+
+<p align="left">
+       <a href="https://extensions.gnome.org/extension/2983/ip-finder/" >
+    <img src="https://gitlab.com/LinxGem33/Neon/raw/master/artwork/get-it-ego.png" width="240" style="margin-left: 4px"/>
+    </a>
+</p>
+
+-----
 
 ### License & Terms ![](https://gitlab.com/LinxGem33/IP-Finder/blob/master/screens/Copyleft-16.png)
 
