@@ -63,7 +63,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
         let actorsInPanelSelector = new Gtk.ComboBoxText({ 
             halign: Gtk.Align.END
         });
-        [_("Flag and IP Address"), _("Flag"), _("IP Address")].forEach( (item) => {
+        [_("IP Address and Flag"), _("Flag"), _("IP Address")].forEach( (item) => {
             actorsInPanelSelector.append_text(item);
         });
 

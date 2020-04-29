@@ -89,7 +89,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             icon_size: ICON_SIZE,
             x_align: Clutter.ActorAlign.START,
             y_align: Clutter.ActorAlign.CENTER,
-            style: "padding-right: 5px; padding-top: 3px;"
+            style: "padding-left: 5px; padding-top: 3px;"
         });
 
         this._vpnIcon = new St.Icon({
@@ -108,9 +108,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             y_align: Clutter.ActorAlign.CENTER
         });
 
-        this.panelBox.add_actor(this._icon);
         this.panelBox.add_actor(this._label);
-
+        this.panelBox.add_actor(this._icon);
+        
         this.add_actor(this.panelBox);
 
         //main containers
@@ -210,6 +210,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     _getIpInfo(timeout = 2000){
+        this._icon.show();
         this._label.text = DEFAULT_DATA.ip.text;
         this._label.style_class = null;
         this._icon.icon_name = 'network-wired-acquiring-symbolic';
@@ -278,7 +279,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._icon.icon_name = '';
             this._icon.gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + data.country + '.png');
             this.ipInfoBox.destroy_all_children();
-
+            if(this._actorsInPanel === PANEL_ACTORS.IP)
+                this._icon.hide();
             if(this.isVPN){
                 this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-on-symbolic.svg");
                 this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-on" : null;
@@ -290,7 +292,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
             if(this._vpnIcons){
                 if(!this.panelBox.contains(this._vpnIcon))
-                    this.panelBox.insert_child_at_index(this._vpnIcon, 1);
+                    this.panelBox.insert_child_at_index(this._vpnIcon, 0);
             }
 
             if(this._vpnColors)
@@ -481,9 +483,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         }
             
         if(this._vpnIcons){
-            global.log("Update ICONS")
             if(!this.panelBox.contains(this._vpnIcon))
-                this.panelBox.insert_child_at_index(this._vpnIcon, 1);
+                this.panelBox.insert_child_at_index(this._vpnIcon, 0);
         }
         else{
             if(this.panelBox.contains(this._vpnIcon))
