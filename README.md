@@ -2,10 +2,6 @@
 
 -----
 
-![](https://gitlab.com/LinxGem33/Neon/-/raw/master/ipfinder-screen-main.png)
-
------
-
 ### What is IP Finder Gnome Extension?
 
 Displays useful information about your public IP Address
