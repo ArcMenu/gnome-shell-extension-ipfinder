@@ -123,7 +123,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             vertical: true,
             x_align: Clutter.ActorAlign.CENTER,
             y_align: Clutter.ActorAlign.CENTER,
-            y_expand: false,
+            y_expand: true,
         });
         parentContainer.add_actor(this._mapInfo);
         this._mapInfo.add_actor(this._getMapTile(DEFAULT_MAP_TILE));
@@ -282,9 +282,11 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
             this._updatePanelStatus();
 
-            let ipInfoRow = new St.BoxLayout({style: "padding-bottom: 5px;"});
+            let ipInfoRow = new St.BoxLayout();
             this.ipInfoBox.add_actor(ipInfoRow);
-            
+
+            this.ipInfoBox.add_actor(new PopupMenu.PopupSeparatorMenuItem());
+
             let label = new St.Label({
                 style_class: this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off',
                 text: _("VPN") + ': ',

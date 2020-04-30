@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 16:00-0400\n"
+"POT-Creation-Date: 2020-04-30 13:47-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,114 +17,138 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:56
+#: prefs.js:59
 msgid "Elements to show on the Panel"
 msgstr ""
 
-#: prefs.js:64
-msgid "Flag and IP Address"
+#: prefs.js:67
+msgid "IP Address and Flag"
 msgstr ""
 
-#: prefs.js:64
+#: prefs.js:67
 msgid "Flag"
 msgstr ""
 
-#: prefs.js:64 extension.js:52
+#: prefs.js:67 extension.js:55
 msgid "IP Address"
 msgstr ""
 
-#: prefs.js:83
+#: prefs.js:86
 msgid "IP Finder Position on the Panel"
 msgstr ""
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Left"
 msgstr ""
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Center"
 msgstr ""
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Right"
 msgstr ""
 
-#: prefs.js:145
+#: prefs.js:111
+msgid "Show VPN Status Icon on the Panel"
+msgstr ""
+
+#: prefs.js:129
+msgid "VPN Status Color for VPN Icon on the Panel"
+msgstr ""
+
+#: prefs.js:147
+msgid "VPN Status Color for IP Text on the Panel"
+msgstr ""
+
+#: prefs.js:202
 msgid "IP Finder - ArcMenu Team"
 msgstr ""
 
-#: prefs.js:150
+#: prefs.js:207
 msgid "Version: "
 msgstr ""
 
-#: prefs.js:154
+#: prefs.js:211
 msgid "Displays useful information about your public IP Address"
 msgstr ""
 
-#: prefs.js:158
+#: prefs.js:215
 msgid "GitLab Link"
 msgstr ""
 
-#: prefs.js:165
+#: prefs.js:222
 msgid "ArcMenu Team on GitLab"
 msgstr ""
 
-#: prefs.js:224
+#: prefs.js:281
 msgid "General"
 msgstr ""
 
-#: prefs.js:230
+#: prefs.js:287
 msgid "About"
 msgstr ""
 
-#: extension.js:52
+#: extension.js:55
 msgid "Loading IP Details"
 msgstr ""
 
-#: extension.js:53
+#: extension.js:56
 msgid "Hostname"
 msgstr ""
 
-#: extension.js:54
+#: extension.js:57
 msgid "City"
 msgstr ""
 
-#: extension.js:55
+#: extension.js:58
 msgid "Region"
 msgstr ""
 
-#: extension.js:56
+#: extension.js:59
 msgid "Country"
 msgstr ""
 
-#: extension.js:57
+#: extension.js:60
 msgid "Location"
 msgstr ""
 
-#: extension.js:58
+#: extension.js:61
 msgid "Org"
 msgstr ""
 
-#: extension.js:59
+#: extension.js:62
 msgid "Postal"
 msgstr ""
 
-#: extension.js:60
+#: extension.js:63
 msgid "Timezone"
 msgstr ""
 
-#: extension.js:71
+#: extension.js:74
 msgid "IP Details"
 msgstr ""
 
-#: extension.js:298
+#: extension.js:292
+msgid "VPN"
+msgstr ""
+
+#: extension.js:300
+msgid "On"
+msgstr ""
+
+#: extension.js:302
+msgid "Off"
+msgstr ""
+
+#: extension.js:358
 msgid "Loading new map tile..."
 msgstr ""
 
-#: extension.js:309
+#: extension.js:369
 msgid "Error Generating Image!"
 msgstr ""
 
-#: extension.js:327 extension.js:345
+#: extension.js:388 extension.js:409
 msgid "No Connection"
 msgstr ""
