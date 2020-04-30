@@ -37,6 +37,9 @@ const _ = Gettext.gettext;
 
 const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
+const SETTINGS_PANEL_VPN_ICONS = 'panel-vpn-icons';
+const SETTINGS_PANEL_VPN_ICON_COLORS = 'panel-vpn-icon-colors';
+const SETTINGS_PANEL_VPN_IP_ADDR_COLORS = 'panel-vpn-ip-addr-colors';
 
 var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.Box {
     _init(settings) {
@@ -61,7 +64,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
         let actorsInPanelSelector = new Gtk.ComboBoxText({ 
             halign: Gtk.Align.END
         });
-        [_("Flag and IP Address"), _("Flag"), _("IP Address")].forEach( (item) => {
+        [_("IP Address and Flag"), _("Flag"), _("IP Address")].forEach( (item) => {
             actorsInPanelSelector.append_text(item);
         });
 
@@ -96,12 +99,66 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
 
         positionSelector.set_active(this._settings.get_enum(SETTINGS_POSITION));
 
-
         positionSelector.connect('changed', () => {
             this._settings.set_enum(SETTINGS_POSITION, positionSelector.get_active());
         });
 
         this.add(positionContainerFrame);
+
+        let panelVpnIconsFrame = new FrameBox();
+        let panelVpnIconsContainer = new FrameBoxRow();
+        let panelVpnIconsLabel = new Gtk.Label({
+            label: _('Show VPN Status Icon on the Panel'),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        let panelVpnIconsSwitch = new Gtk.Switch();
+        panelVpnIconsSwitch.set_active(this._settings.get_boolean(SETTINGS_PANEL_VPN_ICONS))
+        panelVpnIconsSwitch.connect('notify::active', (widget) => {
+            this._settings.set_boolean(SETTINGS_PANEL_VPN_ICONS, widget.get_active());
+        });
+
+        panelVpnIconsContainer.add(panelVpnIconsLabel);
+        panelVpnIconsContainer.add(panelVpnIconsSwitch);
+        panelVpnIconsFrame.add(panelVpnIconsContainer);
+        this.add(panelVpnIconsFrame);
+
+        let panelVpnColorsFrame = new FrameBox();
+        let panelVpnColorsContainer = new FrameBoxRow();
+        let panelVpnColorsLabel = new Gtk.Label({
+            label: _('VPN Status Color for VPN Icon on the Panel'),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        let panelVpnColorsSwitch = new Gtk.Switch();
+        panelVpnColorsSwitch.set_active(this._settings.get_boolean(SETTINGS_PANEL_VPN_ICON_COLORS))
+        panelVpnColorsSwitch.connect('notify::active', (widget) => {
+            this._settings.set_boolean(SETTINGS_PANEL_VPN_ICON_COLORS, widget.get_active());
+        });
+
+        panelVpnColorsContainer.add(panelVpnColorsLabel);
+        panelVpnColorsContainer.add(panelVpnColorsSwitch);
+        panelVpnColorsFrame.add(panelVpnColorsContainer);
+        this.add(panelVpnColorsFrame);
+
+        let panelVpnIpColorsFrame = new FrameBox();
+        let panelVpnIpColorsContainer = new FrameBoxRow();
+        let panelVpnIpColorsLabel = new Gtk.Label({
+            label: _('VPN Status Color for IP Text on the Panel'),
+            halign: Gtk.Align.START,
+            hexpand: true
+        });
+        let panelVpnIpColorsSwitch = new Gtk.Switch();
+        panelVpnIpColorsSwitch.set_active(this._settings.get_boolean(SETTINGS_PANEL_VPN_IP_ADDR_COLORS))
+        panelVpnIpColorsSwitch.connect('notify::active', (widget) => {
+            this._settings.set_boolean(SETTINGS_PANEL_VPN_IP_ADDR_COLORS, widget.get_active());
+        });
+
+        panelVpnIpColorsContainer.add(panelVpnIpColorsLabel);
+        panelVpnIpColorsContainer.add(panelVpnIpColorsSwitch);
+        panelVpnIpColorsFrame.add(panelVpnIpColorsContainer);
+        this.add(panelVpnIpColorsFrame);
+       
     }
 });
 
