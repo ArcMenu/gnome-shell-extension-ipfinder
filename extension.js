@@ -112,7 +112,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         
         this.add_actor(this.panelBox);
 
-        let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
+        let ipInfo = new PopupMenu.PopupMenuSection();
+        this.menu.box.style = "padding: 16px;";
         let parentContainer = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             x_expand: true,
@@ -140,7 +141,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this.ipInfoMap = new Map();
         this.gettingIpInfo = false;
     
-        let buttonBox = new PopupMenu.PopupBaseMenuItem({reactive: false});
+        let buttonBox = new St.BoxLayout();
         this._settingsIcon = new St.Icon({
             icon_name: 'emblem-system-symbolic',
             style_class: 'popup-menu-icon'
@@ -183,7 +184,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._getIpInfo(100);
         });
         buttonBox.add_actor(this._refreshButton);
-        this.menu.addMenuItem(buttonBox);
+        ipInfo.actor.add_actor(buttonBox);
 
         NM.Client.new_async(null, this.establishNetworkConnectivity.bind(this));
 
