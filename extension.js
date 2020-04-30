@@ -180,7 +180,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         });
         this._refreshButton.connect('clicked',  ()=> {
             //global.log("IP-Finder: Refresh Button Clicked - Updating IP Details...");
-            this._getIpInfo(0);
+            this._getIpInfo(100);
         });
         buttonBox.add_actor(this._refreshButton);
         this.menu.addMenuItem(buttonBox);
@@ -214,50 +214,48 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._vpnIcon.style_class = null;
         if(this.panelBox.contains(this._vpnIcon))
             this.panelBox.remove_actor(this._vpnIcon);
-        
-        GLib.timeout_add(0, timeout, () => {
-            if(!this.gettingIpInfo){
-                this.vpnName = null;
+        if(this._getIpInfoID){
+            GLib.source_remove(this._getIpInfoID);
+            this._getIpInfoID = null;
+        }
+        this._getIpInfoID = GLib.timeout_add(0, timeout, () => {
+            this.vpnName = null;
 
-                let activeConnections = this._client.get_active_connections() || [];
-                let vpnConnections = activeConnections.filter(
-                    a => a.vpn || a.type === 'wireguard');
-                vpnConnections.forEach(a => {
-                    if(a.connection){
-                        this.vpnName = a.id;
-                    }
-                });
-                this.isVPN = vpnConnections.length > 0 ? true : false;
-
-                this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
-
-                //global.log("IP-Finder: Getting IP Address...");
-                this.gettingIpInfo = true;
-                Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
-                    if(ipAddrError === null){
-                        //global.log("IP-Finder: Found IP Address - " + ipAddr);
-                        Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
-                            //global.log("IP-Finder: Getting IP Details...");
-                            if(ipDetailsError === null){
-                                //global.log("IP-Finder: Found IP Details. Creating new layout...");
-                                this._loadDetails(ipDetails);
-                            }
-                            else{
-                                //this.logSoupMessage(ipDetailsError, "Getting IP Details");
-                                this._loadDetails(null);
-                            }  
-                        });
-                    }
-                    else{
-                        //this.logSoupMessage(ipAddrError, "Getting IP Address");
-                        this._loadDetails(null);
-                    }      
-                });
-            }
-            GLib.timeout_add(0, timeout, () => {
-                this.gettingIpInfo = false;
-                return GLib.SOURCE_REMOVE;
+            let activeConnections = this._client.get_active_connections() || [];
+            let vpnConnections = activeConnections.filter(
+                a => a.vpn || a.type === 'wireguard');
+            vpnConnections.forEach(a => {
+                if(a.connection){
+                    this.vpnName = a.id;
+                }
             });
+            this.isVPN = vpnConnections.length > 0 ? true : false;
+
+            this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
+
+            //global.log("IP-Finder: Getting IP Address...");
+            this.gettingIpInfo = true;
+            Utils._getIP(this._session, (ipAddrError, ipAddr) =>{
+                if(ipAddrError === null){
+                    //global.log("IP-Finder: Found IP Address - " + ipAddr);
+                    Utils._getIPDetails(this._session, ipAddr, (ipDetailsError, ipDetails) => {
+                        //global.log("IP-Finder: Getting IP Details...");
+                        if(ipDetailsError === null){
+                            //global.log("IP-Finder: Found IP Details. Creating new layout...");
+                            this._loadDetails(ipDetails);
+                        }
+                        else{
+                            //this.logSoupMessage(ipDetailsError, "Getting IP Details");
+                            this._loadDetails(null);
+                        }  
+                    });
+                }
+                else{
+                    //this.logSoupMessage(ipAddrError, "Getting IP Address");
+                    this._loadDetails(null);
+                }      
+            });
+            this._getIpInfoID = null;
             return GLib.SOURCE_REMOVE;
         });
     }
@@ -373,14 +371,14 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                     else{
                         //global.log("IP-Finder: New IP Location - Using New Tile Map");
                         this._settings.set_string('map-tile-coords', tileCoords);
-                        this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
+                        this._mapInfo.add_actor(this._getMapTile(LATEST_MAP_TILE));
                     }  
                 });
             }
             else{
                 //global.log("IP-Finder: Same IP Location - Using Previous Tile Map");
                 this._mapInfo.destroy_all_children();
-                this._mapInfo.add_child(this._getMapTile(LATEST_MAP_TILE));
+                this._mapInfo.add_actor(this._getMapTile(LATEST_MAP_TILE));
             }
         }  
         else{
@@ -425,10 +423,16 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     disable() {
+        if(this._getIpInfoID){
+            GLib.source_remove(this._getIpInfoID);
+            this._getIpInfoID = null;
+        }
+
         if(this.activeConnectionsID){
             this._client.disconnect(this.activeConnectionsID);
             this.activeConnectionsID = null;
         }
+        
         if(this._startUpCompleteID){
             Main.layoutManager.disconnect(this._startUpCompleteID);
             this._startUpCompleteID = null;
