@@ -77,8 +77,6 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this._connection = false;
         this._setPrefs();
         
-        NM.Client.new_async(null, this.establishNetworkConnectivity.bind(this));
-
         this.panelBox = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             y_align: Clutter.ActorAlign.FILL,
@@ -144,7 +142,6 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
         this.ipInfoMap = new Map();
         this.gettingIpInfo = false;
-        this._getIpInfo();
     
         let buttonBox = new PopupMenu.PopupBaseMenuItem({reactive: false});
         this._settingsIcon = new St.Icon({
@@ -191,6 +188,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         buttonBox.add_actor(this._refreshButton);
         this.menu.addMenuItem(buttonBox);
 
+        NM.Client.new_async(null, this.establishNetworkConnectivity.bind(this));
+
         this._settings.connect('changed', ()=> {
             this._setPrefs();
             this._resetPanelPos();
@@ -207,6 +206,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             //global.log("IP-Finder: Network Connection Change Detected!");
             this._getIpInfo();
         });
+        this._getIpInfo();
     }
 
     _getIpInfo(timeout = 2000){
@@ -281,6 +281,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this.ipInfoBox.destroy_all_children();
             if(this._actorsInPanel === PANEL_ACTORS.IP)
                 this._icon.hide();
+
             if(this.isVPN){
                 this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-on-symbolic.svg");
                 this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-on" : null;
@@ -298,7 +299,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             if(this._vpnColors)
                 this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
 
-            let ipInfoRow = new St.BoxLayout();
+            let ipInfoRow = new St.BoxLayout({style: "padding-bottom: 8px;"});
             this.ipInfoBox.add_actor(ipInfoRow);
             
             let label = new St.Label({
