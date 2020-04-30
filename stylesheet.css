@@ -12,6 +12,7 @@
 
 .ip-info-box {
     padding-left: 20px;
+    min-width: 320px;
 }
 
 .ip-info-value {

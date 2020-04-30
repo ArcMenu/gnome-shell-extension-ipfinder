@@ -45,7 +45,8 @@ const ICON_SIZE = 16;
 const SETTINGS_ACTORS_IN_PANEL = 'actors-in-panel';
 const SETTINGS_POSITION = 'position-in-panel';
 const SETTINGS_PANEL_VPN_ICONS = 'panel-vpn-icons';
-const SETTINGS_PANEL_VPN_COLORS = 'panel-vpn-colors';
+const SETTINGS_PANEL_VPN_ICON_COLORS = 'panel-vpn-icon-colors';
+const SETTINGS_PANEL_VPN_IP_ADDR_COLORS = 'panel-vpn-ip-addr-colors';
 
 const DEFAULT_MAP_TILE = Me.path + '/icons/default_map.png';
 const LATEST_MAP_TILE = Me.path + '/icons/latest_map.png';
@@ -111,16 +112,13 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         
         this.add_actor(this.panelBox);
 
-        //main containers
         let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
         let parentContainer = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             x_expand: true,
-            style: "min-width: 400px;"
-        }); //main container that holds ip info and map
-        //
+            style: "min-width:540px; padding-bottom: 10px;"
+        }); 
 
-        //maptile
         this._mapInfo = new St.BoxLayout({ 
             vertical: true,
             x_align: Clutter.ActorAlign.CENTER,
@@ -129,8 +127,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         });
         parentContainer.add_actor(this._mapInfo);
         this._mapInfo.add_actor(this._getMapTile(DEFAULT_MAP_TILE));
-        //
-
+        
         this.ipInfoBox = new St.BoxLayout({
             style_class: 'ip-info-box',
             vertical: true , 
@@ -279,27 +276,13 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._icon.icon_name = '';
             this._icon.gicon = Gio.icon_new_for_string(Me.path + '/icons/flags/' + data.country + '.png');
             this.ipInfoBox.destroy_all_children();
+            
             if(this._actorsInPanel === PANEL_ACTORS.IP)
                 this._icon.hide();
 
-            if(this.isVPN){
-                this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-on-symbolic.svg");
-                this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-on" : null;
-            }
-            else{
-                this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path +"/icons/vpn-off-symbolic.svg");
-                this._vpnIcon.style_class = this._vpnColors ? "ip-info-vpn-off" : null;
-            }
+            this._updatePanelStatus();
 
-            if(this._vpnIcons){
-                if(!this.panelBox.contains(this._vpnIcon))
-                    this.panelBox.insert_child_at_index(this._vpnIcon, 0);
-            }
-
-            if(this._vpnColors)
-                this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
-
-            let ipInfoRow = new St.BoxLayout({style: "padding-bottom: 8px;"});
+            let ipInfoRow = new St.BoxLayout({style: "padding-bottom: 5px;"});
             this.ipInfoBox.add_actor(ipInfoRow);
             
             let label = new St.Label({
@@ -429,9 +412,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     
     _getMapTile(mapTile){
         if(mapTile == DEFAULT_MAP_TILE)
-            return new St.Icon({ gicon: Gio.icon_new_for_string(mapTile), icon_size: 160 });
+            return new St.Icon({ gicon: Gio.icon_new_for_string(mapTile), icon_size: 200 });
         else if (mapTile == LATEST_MAP_TILE)
-            return this._textureCache.load_file_async(Gio.file_new_for_path(LATEST_MAP_TILE), -1, 160, 1, 1); 
+            return this._textureCache.load_file_async(Gio.file_new_for_path(LATEST_MAP_TILE), -1, 200, 1, 1); 
     }
 
     _checkLatestFileMapExists(){
@@ -474,18 +457,20 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     }
 
     _updatePanelStatus(){
-        if(this._vpnColors){
-            this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
-            this._vpnIcon.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
-        }   
-        else{
+        if(this._vpnIconColors)
+            this._vpnIcon.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';  
+        else
             this._vpnIcon.style_class = null;
+        
+        if(this._vpnIpAddrColors)
+            this._label.style_class = this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off';
+        else
             this._label.style_class = null;
-        }
-            
+        
         if(this._vpnIcons){
             if(!this.panelBox.contains(this._vpnIcon))
                 this.panelBox.insert_child_at_index(this._vpnIcon, 0);
+            this._vpnIcon.gicon = Gio.icon_new_for_string(Me.path + (this.isVPN ? "/icons/vpn-on-symbolic.svg" : "/icons/vpn-off-symbolic.svg"));    
         }
         else{
             if(this.panelBox.contains(this._vpnIcon))
@@ -496,8 +481,9 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
     _setPrefs(){  
         this._actorsInPanel = this._settings.get_enum(SETTINGS_ACTORS_IN_PANEL);     
         this._menuPosition = this._settings.get_string(SETTINGS_POSITION);
-        this._vpnIcons = this._settings.get_boolean(SETTINGS_PANEL_VPN_ICONS)
-        this._vpnColors = this._settings.get_boolean(SETTINGS_PANEL_VPN_COLORS)
+        this._vpnIcons = this._settings.get_boolean(SETTINGS_PANEL_VPN_ICONS);
+        this._vpnIconColors = this._settings.get_boolean(SETTINGS_PANEL_VPN_ICON_COLORS);
+        this._vpnIpAddrColors = this._settings.get_boolean(SETTINGS_PANEL_VPN_IP_ADDR_COLORS);
     }
 });
 
