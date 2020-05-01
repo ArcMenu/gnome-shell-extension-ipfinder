@@ -32,7 +32,7 @@ const {Clutter, GLib, Gio, GObject, NM, Soup, Shell, St} = imports.gi;
 const Clipboard = St.Clipboard.get_default();
 const CLIPBOARD_TYPE = St.ClipboardType.CLIPBOARD;
 const Convenience = Me.imports.convenience;
-const Gettext = imports.gettext.domain('IP-Finder');
+const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -103,7 +103,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this.ipAddr = DEFAULT_DATA.ip.text;
 
         this._label = new St.Label({
-            text: this.ipAddr,
+            text: _(this.ipAddr),
             y_align: Clutter.ActorAlign.CENTER
         });
 
@@ -112,7 +112,8 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         
         this.add_actor(this.panelBox);
 
-        let ipInfo = new PopupMenu.PopupBaseMenuItem({reactive: false});
+        let ipInfo = new PopupMenu.PopupMenuSection();
+        this.menu.box.style = "padding: 16px;";
         let parentContainer = new St.BoxLayout({
             x_align: Clutter.ActorAlign.FILL,
             x_expand: true,
@@ -140,7 +141,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         this.ipInfoMap = new Map();
         this.gettingIpInfo = false;
     
-        let buttonBox = new PopupMenu.PopupBaseMenuItem({reactive: false});
+        let buttonBox = new St.BoxLayout();
         this._settingsIcon = new St.Icon({
             icon_name: 'emblem-system-symbolic',
             style_class: 'popup-menu-icon'
@@ -183,7 +184,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
             this._getIpInfo(100);
         });
         buttonBox.add_actor(this._refreshButton);
-        this.menu.addMenuItem(buttonBox);
+        ipInfo.actor.add_actor(buttonBox);
 
         NM.Client.new_async(null, this.establishNetworkConnectivity.bind(this));
 
@@ -208,7 +209,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
     _getIpInfo(timeout = 2000){
         this._icon.show();
-        this._label.text = DEFAULT_DATA.ip.text;
+        this._label.text = _(DEFAULT_DATA.ip.text);
         this._label.style_class = null;
         this._icon.icon_name = 'network-wired-acquiring-symbolic';
         this._vpnIcon.style_class = null;
@@ -304,7 +305,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                 x_expand: true,
                 y_expand: false,
                 style_class: this.isVPN ? 'ip-info-vpn-on' : 'ip-info-vpn-off', 
-                text: vpnLabelText,
+                text: _(vpnLabelText),
             });
             ipInfoRow.add_actor(vpnLabel);
             let vpnIcon = new St.Icon({
@@ -320,7 +321,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
                     
                     let label = new St.Label({
                         style_class: 'ip-info-key',
-                        text: DEFAULT_DATA[key].name + ': ',
+                        text: _(DEFAULT_DATA[key].name) + ': ',
                         x_align: Clutter.ActorAlign.FILL,
                         y_align: Clutter.ActorAlign.CENTER,
                         y_expand: true,
@@ -395,7 +396,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
                 let label = new St.Label({
                     style_class: 'ip-info-value', 
-                    text: DEFAULT_DATA[key].name + ': ',
+                    text: _(DEFAULT_DATA[key].name) + ': ',
                     x_align: Clutter.ActorAlign.FILL,
                 });
                 ipInfoRow.add_actor(label);
@@ -494,7 +495,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 });
 
 function init() {
-    Convenience.initTranslations("IP-Finder");
+    Convenience.initTranslations();
 }
 
 let _indicator;
