@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: IP-Finder@linxgem 33.com\n"
+"Project-Id-Version: Ip-Finder\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 10:46+0200\n"
-"PO-Revision-Date: 2020-04-28 11:10+0200\n"
+"POT-Creation-Date: 2020-05-01 07:55+0200\n"
+"PO-Revision-Date: 2020-05-01 08:06+0200\n"
 "Last-Translator: galen1423 <gnu.linux@zaclys.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -19,114 +19,138 @@ msgstr ""
 "X-Generator: Poedit 2.3\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: extension.js:52 prefs.js:64
+#: extension.js:55 prefs.js:67
 msgid "IP Address"
-msgstr "Adresse IP"
+msgstr "Adresse I.P"
 
-#: extension.js:52
+#: extension.js:55
 msgid "Loading IP Details"
 msgstr "Chargement des détails sur l'IP"
 
-#: extension.js:53
+#: extension.js:56
 msgid "Hostname"
 msgstr "Nom de l'hôte"
 
-#: extension.js:54
+#: extension.js:57
 msgid "City"
 msgstr "Ville"
 
-#: extension.js:55
+#: extension.js:58
 msgid "Region"
 msgstr "Région"
 
-#: extension.js:56
+#: extension.js:59
 msgid "Country"
 msgstr "Pays"
 
-#: extension.js:57
+#: extension.js:60
 msgid "Location"
 msgstr "Coordonnées"
 
-#: extension.js:58
+#: extension.js:61
 msgid "Org"
 msgstr "Org"
 
-#: extension.js:59
+#: extension.js:62
 msgid "Postal"
 msgstr "Code Postal"
 
-#: extension.js:60
+#: extension.js:63
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: extension.js:71
+#: extension.js:74
 msgid "IP Details"
 msgstr "Détails de l'IP"
 
+#: extension.js:290
+msgid "VPN"
+msgstr "VPN"
+
 #: extension.js:298
+msgid "On"
+msgstr "Allumer"
+
+#: extension.js:300
+msgid "Off"
+msgstr "Éteindre"
+
+#: extension.js:356
 msgid "Loading new map tile..."
 msgstr "Chargement de la nouvelle carte..."
 
-#: extension.js:309
+#: extension.js:367
 msgid "Error Generating Image!"
 msgstr "Erreur lors de la génération de l'image !"
 
-#: extension.js:327 extension.js:345
+#: extension.js:386 extension.js:407
 msgid "No Connection"
 msgstr "Aucune Connexion"
 
-#: prefs.js:56
+#: prefs.js:59
 msgid "Elements to show on the Panel"
 msgstr "Éléments affichés par l'indicateur"
 
-#: prefs.js:64
-msgid "Flag and IP Address"
+#: prefs.js:67
+msgid "IP Address and Flag"
 msgstr "Drapeau et Adresse IP"
 
-#: prefs.js:64
+#: prefs.js:67
 msgid "Flag"
 msgstr "Drapeau"
 
-#: prefs.js:83
+#: prefs.js:86
 msgid "IP Finder Position on the Panel"
 msgstr "Position de l'indicateur dans la barre du haut"
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Left"
 msgstr "Gauche"
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Center"
 msgstr "Centre"
 
-#: prefs.js:93
+#: prefs.js:96
 msgid "Right"
 msgstr "Droite"
 
-#: prefs.js:145
+#: prefs.js:111
+msgid "Show VPN Status Icon on the Panel"
+msgstr "Afficher l'icône d'état VPN sur l'indicateur"
+
+#: prefs.js:129
+msgid "VPN Status Color for VPN Icon on the Panel"
+msgstr "Couleur de l'icône d'état VPN sur l'indicateur"
+
+#: prefs.js:147
+msgid "VPN Status Color for IP Text on the Panel"
+msgstr "Couleur du texte de l'IP sur l'indicateur"
+
+#: prefs.js:202
 msgid "IP Finder - ArcMenu Team"
 msgstr "IP Finder - Équipe ArcMenu"
 
-#: prefs.js:150
+#: prefs.js:207
 msgid "Version: "
 msgstr "Version : "
 
-#: prefs.js:154
+#: prefs.js:211
 msgid "Displays useful information about your public IP Address"
-msgstr "Affiche des informations utiles sur votre adresse IP publique"
+msgstr "Afficher des informations utiles sur votre adresse IP publique"
 
-#: prefs.js:158
+#: prefs.js:215
 msgid "GitLab Link"
 msgstr "Lien GitLab"
 
-#: prefs.js:165
+#: prefs.js:222
 msgid "ArcMenu Team on GitLab"
 msgstr "Équipe ArcMenu sur GitLab"
 
-#: prefs.js:224
+#: prefs.js:281
 msgid "General"
 msgstr "Général"
 
-#: prefs.js:230
+#: prefs.js:287
 msgid "About"
 msgstr "À propos"
