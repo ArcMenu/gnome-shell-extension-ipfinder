@@ -293,7 +293,7 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
 });
 
 function init() {
-  Convenience.initTranslations("IP-Finder");
+  Convenience.initTranslations();
 }
 
 function buildPrefsWidget() {

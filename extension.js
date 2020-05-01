@@ -495,7 +495,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 });
 
 function init() {
-    Convenience.initTranslations("IP-Finder");
+    Convenience.initTranslations();
 }
 
 let _indicator;

@@ -3,7 +3,6 @@
 UUID = IP-Finder@linxgem33.com
 BASE_MODULES = convenience.js COPYING extension.js metadata.json README.md stylesheet.css prefs.js utils.js
 
-
 TOLOCALIZE = extension.js prefs.js
 EXTRA_DIRECTORIES = icons
 MSGSRC = $(wildcard po/*.po)
@@ -68,7 +67,7 @@ zip-file: _build
 _build: all
 	-rm -fR ./_build
 	mkdir -p _build
-	cp $(BASE_MODULES) $(EXTRA_MODULES) _build
+	cp $(BASE_MODULES) _build
 	cp -r $(EXTRA_DIRECTORIES) _build
 	mkdir -p _build/schemas
 	cp schemas/*.xml _build/schemas/
