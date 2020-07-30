@@ -21,7 +21,7 @@ IP Finder displays information about your public IP address, hostname, country, 
 
 #### IP Finder has added security
 
-Newly developed revised code base using open technologies and using API's for Public IP and Map Tile image locations using GET requests over HTTPS for added encrypted  Security, Please see source code for more details.
+Newly developed revised code base using open technologies and using API's for Public IP and Map Tile image locations using GET requests over HTTPS for a added layer of encrypted  Security, Please see source code for more details.
 
 -----
 
