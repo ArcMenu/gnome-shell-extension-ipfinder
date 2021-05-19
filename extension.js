@@ -26,12 +26,12 @@
  * along with IP Finder gnome extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils
+const Me = ExtensionUtils.getCurrentExtension();
 
 const {Clutter, GLib, Gio, GObject, NM, Soup, Shell, St} = imports.gi;
 const Clipboard = St.Clipboard.get_default();
 const CLIPBOARD_TYPE = St.ClipboardType.CLIPBOARD;
-const Convenience = Me.imports.convenience;
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
@@ -74,7 +74,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
         super._init(0.5, _('IP Details'));
         this._textureCache = St.TextureCache.get_default();
         this._session = new Soup.Session({ user_agent : 'ip-finder/' + Me.metadata.version, timeout: 5 });
-        this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
+        this._settings = ExtensionUtils.getSettings(Me.metadata['settings-schema']);
         this._connection = false;
         this._setPrefs();
         
@@ -495,7 +495,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 });
 
 function init() {
-    Convenience.initTranslations();
+    ExtensionUtils.initTranslations();
 }
 
 let _indicator;

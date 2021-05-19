@@ -4,8 +4,12 @@
 "gettext-domain": "ip-finder",
 "name": "IP Finder", 
 "settings-schema": "org.gnome.shell.extensions.public-ip-address", 
-"shell-version": [ "3.36","3.38" ], 
+"shell-version": [
+    "3.36",
+    "3.38",
+    "40"
+  ],
 "url": "https://gitlab.com/arcmenu-team/IP-Finder", 
 "uuid": "IP-Finder@linxgem33.com", 
-"version": 6.0
+"version": 8
 }
