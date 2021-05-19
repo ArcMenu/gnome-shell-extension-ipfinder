@@ -224,7 +224,7 @@ var IPMenu = GObject.registerClass(class IPMenu_IPMenu extends PanelMenu.Button{
 
             let activeConnections = this._client.get_active_connections() || [];
             let vpnConnections = activeConnections.filter(
-                a => a.vpn_state === NM.VpnConnectionState.ACTIVATED);
+                a => a.vpn || a.type === 'wireguard' || a.type === 'tun');
             vpnConnections.forEach(a => {
                 if(a.connection){
                     this.vpnName = a.id;
