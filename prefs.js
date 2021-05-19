@@ -30,7 +30,6 @@ const {Gdk, GdkPixbuf, Gio, GLib, GObject, Gtk} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = Me.imports.convenience;
 
 const Gettext = imports.gettext.domain(Me.metadata['gettext-domain']);
 const _ = Gettext.gettext;
@@ -45,7 +44,10 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
     _init(settings) {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
-            margin: 24,
+            margin_top: 24,
+            margin_bottom: 24,
+            margin_start: 24,
+            margin_end: 24,
             spacing: 20,
             homogeneous: false,
             vexpand: true
@@ -78,7 +80,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
             this._settings.set_enum(SETTINGS_ACTORS_IN_PANEL, actorsInPanelSelector.get_active());
         });
 
-        this.add(actorsInPanelContainerFrame);
+        this.append(actorsInPanelContainerFrame);
 
         let positionContainerFrame = new FrameBox();
         let positionContainer = new FrameBoxRow();
@@ -103,7 +105,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
             this._settings.set_enum(SETTINGS_POSITION, positionSelector.get_active());
         });
 
-        this.add(positionContainerFrame);
+        this.append(positionContainerFrame);
 
         let panelVpnIconsFrame = new FrameBox();
         let panelVpnIconsContainer = new FrameBoxRow();
@@ -121,7 +123,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
         panelVpnIconsContainer.add(panelVpnIconsLabel);
         panelVpnIconsContainer.add(panelVpnIconsSwitch);
         panelVpnIconsFrame.add(panelVpnIconsContainer);
-        this.add(panelVpnIconsFrame);
+        this.append(panelVpnIconsFrame);
 
         let panelVpnColorsFrame = new FrameBox();
         let panelVpnColorsContainer = new FrameBoxRow();
@@ -139,7 +141,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
         panelVpnColorsContainer.add(panelVpnColorsLabel);
         panelVpnColorsContainer.add(panelVpnColorsSwitch);
         panelVpnColorsFrame.add(panelVpnColorsContainer);
-        this.add(panelVpnColorsFrame);
+        this.append(panelVpnColorsFrame);
 
         let panelVpnIpColorsFrame = new FrameBox();
         let panelVpnIpColorsContainer = new FrameBoxRow();
@@ -157,7 +159,7 @@ var GeneralPage = GObject.registerClass( class IPFinder_GeneralPage extends Gtk.
         panelVpnIpColorsContainer.add(panelVpnIpColorsLabel);
         panelVpnIpColorsContainer.add(panelVpnIpColorsSwitch);
         panelVpnIpColorsFrame.add(panelVpnIpColorsContainer);
-        this.add(panelVpnIpColorsFrame);
+        this.append(panelVpnIpColorsFrame);
        
     }
 });
@@ -166,7 +168,10 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
     _init(settings) {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
-            margin: 24,
+            margin_top: 24,
+            margin_bottom: 24,
+            margin_start: 24,
+            margin_end: 24,
             spacing: 20,
             homogeneous: false
         });
@@ -184,44 +189,46 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             let logoPath = Me.path + '/icons/default_map.png';
             let [imageWidth, imageHeight] = [150, 150];
             let pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(logoPath, imageWidth, imageHeight);
-            let ipFinderImage = new Gtk.Image({ pixbuf: pixbuf });
-            let ipFinderImageBox = new Gtk.VBox({
+            let ipFinderImage = Gtk.Picture.new_for_pixbuf(pixbuf);
+            let ipFinderImageBox = new Gtk.Box({
                 margin_top: 0,
                 margin_bottom: 0,
-                expand: false
+                hexpand: false,
+                orientation: Gtk.Orientation.VERTICAL
             });
-            ipFinderImageBox.add(ipFinderImage);
+            ipFinderImageBox.append(ipFinderImage);
 
             // Create the info box
-            let ipFinderInfoBox = new Gtk.VBox({
+            let ipFinderInfoBox = new Gtk.Box({
                 margin_top: 0,
                 margin_bottom: 5,
-                expand: false
+                hexpand: false,
+                orientation: Gtk.Orientation.VERTICAL
             });
             let ipFinderLabel = new Gtk.Label({
                 label: '<b>' + _('IP Finder - ArcMenu Team') + '</b>',
                 use_markup: true,
-                expand: false
+                hexpand: false
             });
             let versionLabel = new Gtk.Label({
                 label: _('Version: ') + releaseVersion,
-                expand: false
+                hexpand: false
             });
             let projectDescriptionLabel = new Gtk.Label({
                 label: _('Displays useful information about your public IP Address'),
-                expand: false
+                hexpand: false
             });
             let projectLinkButton = new Gtk.LinkButton({
                 label: _('GitLab Link'),
                 uri: projectUrl,
-                expand: false,
+                hexpand: false,
                 halign: Gtk.Align.CENTER
             });
 
             let arcMenuTeamButton = new Gtk.LinkButton({
                 label: _('ArcMenu Team on GitLab'),
                 uri: 'https://gitlab.com/arcmenu-team',
-                expand: false,
+                hexpand: false,
                 halign: Gtk.Align.CENTER
             });
             
@@ -230,38 +237,37 @@ var AboutPage = GObject.registerClass( class IPFinder_AboutPage extends Gtk.Box 
             this.creditsScrollWindow.set_max_content_height(150);
             this.creditsScrollWindow.set_min_content_height(150);
             this.creditsFrame = new Gtk.Frame();
-            this.creditsFrame.set_shadow_type(Gtk.ShadowType.NONE);
-            this.creditsScrollWindow.add_with_viewport(this.creditsFrame);
+            this.creditsScrollWindow.set_child(this.creditsFrame);
   	        let creditsLabel = new Gtk.Label({
 		        label: _(CREDITS),
 		        use_markup: true,
 		        justify: Gtk.Justification.CENTER,
-		        expand: false
+		        hexpand: false
             });
-            this.creditsFrame.add(creditsLabel);
+            this.creditsFrame.set_child(creditsLabel);
             
-            ipFinderInfoBox.add(ipFinderLabel);
-            ipFinderInfoBox.add(versionLabel);
-            ipFinderInfoBox.add(projectDescriptionLabel);
-            ipFinderInfoBox.add(projectLinkButton);
-            ipFinderInfoBox.add(arcMenuTeamButton);
-            ipFinderInfoBox.add(this.creditsScrollWindow);
+            ipFinderInfoBox.append(ipFinderLabel);
+            ipFinderInfoBox.append(versionLabel);
+            ipFinderInfoBox.append(projectDescriptionLabel);
+            ipFinderInfoBox.append(projectLinkButton);
+            ipFinderInfoBox.append(arcMenuTeamButton);
+            ipFinderInfoBox.append(this.creditsScrollWindow);
 
             // Create the GNU software box
             let gnuSofwareLabel = new Gtk.Label({
                 label: _(GNU_SOFTWARE),
                 use_markup: true,
                 justify: Gtk.Justification.CENTER,
-                expand: true
+                hexpand: true
             });
             let gnuSofwareLabelBox = new Gtk.Box({
                 orientation: Gtk.Orientation.VERTICAL
             });
-            gnuSofwareLabelBox.add(gnuSofwareLabel);
+            gnuSofwareLabelBox.append(gnuSofwareLabel);
 
-            this.add(ipFinderImageBox);
-            this.add(ipFinderInfoBox);
-            this.add(gnuSofwareLabelBox);
+            this.append(ipFinderImageBox);
+            this.append(ipFinderInfoBox);
+            this.append(gnuSofwareLabelBox);
     }
 });
 
@@ -269,10 +275,9 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
     _init() {
         super._init({
             orientation: Gtk.Orientation.VERTICAL,
-            spacing: 0,
-            border_width: 0
+            spacing: 0
         });
-        this._settings = Convenience.getSettings(Me.metadata['settings-schema']);
+        this._settings = ExtensionUtils.getSettings(Me.metadata['settings-schema']);
         
         let notebook = new Gtk.Notebook();
 
@@ -288,35 +293,35 @@ var IPFinderPreferencesWidget = GObject.registerClass( class IPFinder_Preference
             use_markup: true
         }));
 
-        this.add(notebook);
+        this.append(notebook);
     }
 });
 
 function init() {
-  Convenience.initTranslations();
+    ExtensionUtils.initTranslations();
 }
 
 function buildPrefsWidget() {
-  let widget = new IPFinderPreferencesWidget();
-  widget.show_all();
-  return widget;
+    let widget = new IPFinderPreferencesWidget();
+    widget.show();
+    return widget;
 }
 
 var FrameBox = GObject.registerClass(class IPFinder_FrameBox extends Gtk.Frame {
     _init() {
-        super._init({ label_yalign: 0.50 });
+        super._init({ });
         this._listBox = new Gtk.ListBox();
         this._listBox.set_selection_mode(Gtk.SelectionMode.NONE);
         this.count=0;
-        Gtk.Frame.prototype.add.call(this, this._listBox);
+        Gtk.Frame.prototype.set_child.call(this, this._listBox);
     }
 
     add(boxRow) {
-        this._listBox.add(boxRow);
+        this._listBox.append(boxRow);
         this.count++;
     }
     show() {
-        this._listBox.show_all();
+        this._listBox.show();
     }
     length() {
         return this._listBox.length;
@@ -332,7 +337,7 @@ var FrameBox = GObject.registerClass(class IPFinder_FrameBox extends Gtk.Frame {
             this._listBox.remove(child);
         }
         this.count = 0;
-        this._listBox.show_all();
+        this._listBox.show();
     }
     get_index(index){
         return this._listBox.get_row_at_index(index);
@@ -347,15 +352,20 @@ var FrameBoxRow = GObject.registerClass(class IPFinder_FrameBoxRow extends Gtk.L
     _init() {
         super._init({});
         this._grid = new Gtk.Grid({
-            margin: 5,
+            margin_top: 5,
+            margin_bottom: 5,
+            margin_start: 5,
+            margin_end: 5,
             column_spacing: 20,
             row_spacing: 20
         });
-        Gtk.ListBoxRow.prototype.add.call(this, this._grid);
+        this.x = 0;
+        Gtk.ListBoxRow.prototype.set_child.call(this, this._grid);
     }
 
     add(widget) {
-        this._grid.add(widget);
+        this._grid.attach(widget, this.x, 0, 1, 1);
+        this.x++;
     }
 });
 
