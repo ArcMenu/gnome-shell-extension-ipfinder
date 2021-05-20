@@ -1,0 +1,153 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: IP-Finder@linxgem 33.com\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2021-05-20 16:50-0300\n"
+"Last-Translator: galen1423 <gnu.linux@zaclys.net>\n"
+"Language-Team: Brazilian_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Last-Translator: \n"
+"Language-Team: Fr\n"
+"X-Generator: Poedit 2.4.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"POT-Creation-Date: \n"
+"Language: pt_BR\n"
+
+#: extension.js:55 prefs.js:67
+msgid "IP Address"
+msgstr "Endereço IP"
+
+#: extension.js:55
+msgid "Loading IP Details"
+msgstr "Carregando detalhes do IP"
+
+#: extension.js:56
+msgid "Hostname"
+msgstr "Hostname"
+
+#: extension.js:57
+msgid "City"
+msgstr "Cidade"
+
+#: extension.js:58
+msgid "Region"
+msgstr "Região"
+
+#: extension.js:59
+msgid "Country"
+msgstr "País"
+
+#: extension.js:60
+msgid "Location"
+msgstr "Coordenadas"
+
+#: extension.js:61
+msgid "Org"
+msgstr "Org"
+
+#: extension.js:62
+msgid "Postal"
+msgstr "Código Postal"
+
+#: extension.js:63
+msgid "Timezone"
+msgstr "Fuso horário"
+
+#: extension.js:74
+msgid "IP Details"
+msgstr "Detalhes do IP"
+
+#: extension.js:290
+msgid "VPN"
+msgstr "VPN"
+
+#: extension.js:298
+msgid "On"
+msgstr "Conectado"
+
+#: extension.js:300
+msgid "Off"
+msgstr "Desconectado"
+
+#: extension.js:356
+msgid "Loading new map tile..."
+msgstr "Carregando novo mapa..."
+
+#: extension.js:367
+msgid "Error Generating Image!"
+msgstr "Erro ao gerar a imagem!"
+
+#: extension.js:386 extension.js:407
+msgid "No Connection"
+msgstr "Sem Conexão"
+
+#: prefs.js:59
+msgid "Elements to show on the Panel"
+msgstr "Elementos a serem mostrados no painel"
+
+#: prefs.js:67
+msgid "IP Address and Flag"
+msgstr "Endereço IP e bandeira"
+
+#: prefs.js:67
+msgid "Flag"
+msgstr "Bandeira"
+
+#: prefs.js:86
+msgid "IP Finder Position on the Panel"
+msgstr "Posição do indicator na barra"
+
+#: prefs.js:96
+msgid "Left"
+msgstr "Esquerda"
+
+#: prefs.js:96
+msgid "Center"
+msgstr "Centro"
+
+#: prefs.js:96
+msgid "Right"
+msgstr "Direita"
+
+#: prefs.js:111
+msgid "Show VPN Status Icon on the Panel"
+msgstr "Mostrar ícone de estado da VPN no indicador"
+
+#: prefs.js:129
+msgid "VPN Status Color for VPN Icon on the Panel"
+msgstr "Cor do ícone de estado da VPN na barra"
+
+#: prefs.js:147
+msgid "VPN Status Color for IP Text on the Panel"
+msgstr "Cor do texto do IP na barra"
+
+#: prefs.js:202
+msgid "IP Finder - ArcMenu Team"
+msgstr "IP Finder - Equipe ArcMenu"
+
+#: prefs.js:207
+msgid "Version: "
+msgstr "Versão : "
+
+#: prefs.js:211
+msgid "Displays useful information about your public IP Address"
+msgstr "Mostrar informações úteis sobre seu endereço IP público"
+
+#: prefs.js:215
+msgid "GitLab Link"
+msgstr "Link do GitLab"
+
+#: prefs.js:222
+msgid "ArcMenu Team on GitLab"
+msgstr "Equipe ArcMenu no GitLab"
+
+#: prefs.js:281
+msgid "General"
+msgstr "Geral"
+
+#: prefs.js:287
+msgid "About"
+msgstr "Sobre"
